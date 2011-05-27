@@ -8,6 +8,4 @@ class Project(info: ProjectInfo) extends DefaultProject(info) with assembly.Asse
 
   val scalatest = "org.scalatest" % "scalatest" % "1.3"
 
-  val lift_json = "net.liftweb" %% "lift-json" % "2.3"
-
 }

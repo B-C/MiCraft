@@ -22,3 +22,6 @@ doxygen/
 *.log
 target/
 project/
+
+#Minecraft
+level
