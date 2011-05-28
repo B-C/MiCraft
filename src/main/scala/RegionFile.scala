@@ -1,6 +1,9 @@
 
+/*
+ *  ToDo: handle errors
+ */
 
-object Chunk {
+object RegionFile {
   import com.mojang.RegionFileCache
   import java.io.File
   import java.io.DataInputStream

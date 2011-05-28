@@ -1,13 +1,14 @@
-//import org.jnbt._
-import java.io.DataInputStream
+/*
+ * ToDo : Class List & Compound : factorize toString
+ *        Tag.conpound : accu
+ *        Option ?
+ */
 
-abstract class Tag(name: String, value: Option[Any])
+sealed abstract class Tag(name: String, value: Option[Any])
 
 // TYPE: 0  NAME: TAG_End
 // Payload: None.
-// Note:    This tag is used to mark the end of a list.
-//          Cannot be named! If type 0 appears where a Named Tag is expected, the name is assumed to be "".
-//          (In other words, this Tag is always just a single 0 byte when named, and nothing in all other cases)
+// Note:    This tag is used to mark the end of a list. Cannot be named
 case class EndTag() extends Tag("", None)
 
 // TYPE: 1  NAME: TAG_Byte
@@ -37,35 +38,37 @@ case class DoubleTag(name: String, value:Double) extends Tag(name, Option(value)
 // TYPE: 7  NAME: TAG_Byte_Array
 // Payload: TAG_Int length 
 //          An array of bytes of unspecified format. The length of this array is <length> bytes
-case class ByteArrayTag(name: String, value:Array[Byte]) extends Tag(name, Option(value))
-
-// to string ??
-
+case class ByteArrayTag(name: String, value:Array[Byte]) extends Tag(name, Option(value)){
+  override def toString = "ByteArrayTag(" + name + "," + value.length + " bytes)"
+}
 
 // TYPE: 8  NAME: TAG_String
 // Payload: TAG_Short length 
 //          An array of bytes defining a string in UTF-8 format. The length of this array is <length> bytes
-case class StringTag(name: String, value:String) extends Tag(name, Some(value))
+case class StringTag(name: String, value: String) extends Tag(name, Some(value))
 
 // TYPE: 9  NAME: TAG_List
 // Payload: TAG_Byte tagId
 //          TAG_Int length
 //          A sequential list of Tags (not Named Tags), of type <typeId>. The length of this array is <length> Tags
 // Notes:   All tags share the same type.
-case class ListTag(name: String, value:List[Tag]) extends Tag(name, Some(value))
+case class ListTag(name: String, value: List[Tag]) extends Tag(name, Some(value)){
+  override def toString = 
+    "ListTag(" + name + ")" + value.map(_.toString.replaceAll("\n","\n\t")).mkString("{\n\t", "\n\t", "\n}")
+}
 
 // TYPE: 10 NAME: TAG_Compound
 // Payload: A sequential list of Named Tags. This array keeps going until a TAG_End is found.
-//          TAG_End end
-//          The names of the named tags have to be unique within each TAG_Compound
-//          The order of the tags is not guaranteed.
-case class CompoundTag(name: String, value:List[Tag]) extends Tag(name, Some(value))
-// ????
+case class CompoundTag(name: String, value: List[Tag]) extends Tag(name, Some(value)){
+  override def toString = 
+    "CompoundTag(" + name + ")" + value.map(_.toString.replaceAll("\n","\n\t")).mkString("{\n\t", "\n\t", "\n}")
+}
 
 
 object Tag {
+  import java.io.DataInputStream
 
-  def readPayload( tagType: Byte, name: String, stream: DataInputStream): Tag =
+  private def readPayload( tagType: Byte, name: String, stream: DataInputStream): Tag =
     tagType match {
       case 0 => EndTag()
       case 1 => ByteTag(name, stream.readByte())
@@ -94,7 +97,7 @@ object Tag {
       case 10 => CompoundTag(name, compound(stream))
     }
 
-  def compound(stream: DataInputStream): List[Tag] = {
+  private def compound(stream: DataInputStream): List[Tag] = {
     var tag = apply(stream)
     tag match {
       case e:EndTag =>  List[Tag]() ;
@@ -108,7 +111,6 @@ object Tag {
       readPayload(tagType, stream.readUTF, stream)
     else
       EndTag()
-    //    stream.close()
   }
 }
 
