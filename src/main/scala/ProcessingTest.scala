@@ -16,6 +16,7 @@ object ProcessingTest extends PApplet {
   var cameraFF =  new Camera(new PVector(70f, 35.0f, 120), new PVector(width/2.0f, height/2.0f, 0), this)
 
   override def setup(){
+    noCursor
     size(640, 360, PConstants.P3D)
 
     colSpan = width/(cols-1)
@@ -82,8 +83,7 @@ object ProcessingTest extends PApplet {
     }
   }
 
-  override def mousePressed(): Unit = {
-  }
+  override def mouseMoved(): Unit = cameraFF.mouseMotion(mouseX, mouseY)
 
   def main(args: Array[String]): Unit = {
     var frame = new javax.swing.JFrame("Test")

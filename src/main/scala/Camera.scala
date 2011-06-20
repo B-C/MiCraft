@@ -7,7 +7,12 @@ class Camera(var position: PVector, var target: PVector, parent:PApplet){
   var theta = 0f
   var phi = 0f
 
+  var lastMouseX = parent.mouseX
+  var lastMouseY = parent.mouseY
+
   val up = new PVector(0,0,1)
+
+  val sensivity:Float = 0.1f
 
 //var verticalMotionActive: Boolean  
 
@@ -50,6 +55,15 @@ class Camera(var position: PVector, var target: PVector, parent:PApplet){
   }
   def moveDown(distance:Float): Unit = moveUp(-distance)
 
+  def mouseMotion(x:Int, y:Int): Unit = {
+    theta -= (x - lastMouseX) *sensivity
+    phi -= (y - lastMouseY) *sensivity
+
+    lastMouseX = x
+    lastMouseY = y
+
+    VectorsFromAngles
+  }
 
   def apply(): Unit =
     parent.camera(position.x, position.y, position.z, target.x, target.y, target.z, 0, 0, 1)
