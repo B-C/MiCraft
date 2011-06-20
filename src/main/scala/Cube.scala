@@ -8,9 +8,11 @@ class Cube(w:Int, h:Int, d:Int, shiftX:Int, shiftY:Int, shiftZ:Int, parent:proce
   def drawCube(): Unit = {
 
     parent.beginShape(PConstants.QUADS)
-    // Front face
 
+    // Front face
+//   fill(0, 1, 1) //color
     drawHelper(-w/2, -h/2, -d/2) 
+//   fill(0, 1, 1)
     drawHelper(w, -h/2, -d/2) 
     drawHelper(w, h, -d/2) 
     drawHelper(-w/2, h, -d/2) 
