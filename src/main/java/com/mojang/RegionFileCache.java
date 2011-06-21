@@ -25,6 +25,8 @@ package com.mojang;
 
 // A simple cache and wrapper for efficiently multiple RegionFiles simultaneously.
 
+// MiCraft: Removed writting part
+
 import java.io.*;
 import java.lang.ref.*;
 import java.util.*;
@@ -49,9 +51,9 @@ public class RegionFileCache {
             return ref.get();
         }
 
-        if (!regionDir.exists()) {
-            regionDir.mkdirs();
-        }
+        // if (!regionDir.exists()) {
+        //     regionDir.mkdirs();
+        // }
 
         if (cache.size() >= MAX_CACHE_SIZE) {
             RegionFileCache.clear();
@@ -83,10 +85,5 @@ public class RegionFileCache {
     public static DataInputStream getChunkDataInputStream(File basePath, int chunkX, int chunkZ) {
         RegionFile r = getRegionFile(basePath, chunkX, chunkZ);
         return r.getChunkDataInputStream(chunkX & 31, chunkZ & 31);
-    }
-
-    public static DataOutputStream getChunkDataOutputStream(File basePath, int chunkX, int chunkZ) {
-        RegionFile r = getRegionFile(basePath, chunkX, chunkZ);
-        return r.getChunkDataOutputStream(chunkX & 31, chunkZ & 31);
     }
 }

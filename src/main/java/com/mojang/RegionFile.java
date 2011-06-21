@@ -58,6 +58,8 @@ package com.mojang;
 
  */
 
+// MiCraft: Removed writting part
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.zip.*;
@@ -71,7 +73,6 @@ public class RegionFile {
     private static final int SECTOR_INTS = SECTOR_BYTES / 4;
 
     static final int CHUNK_HEADER_SIZE = 5;
-    private static final byte emptySector[] = new byte[4096];
 
     private final File fileName;
     private RandomAccessFile file;
@@ -236,115 +237,6 @@ public class RegionFile {
         }
     }
 
-    public DataOutputStream getChunkDataOutputStream(int x, int z) {
-        if (outOfBounds(x, z)) return null;
-
-        return new DataOutputStream(new DeflaterOutputStream(new ChunkBuffer(x, z)));
-    }
-
-    /*
-     * lets chunk writing be multithreaded by not locking the whole file as a
-     * chunk is serializing -- only writes when serialization is over
-     */
-    class ChunkBuffer extends ByteArrayOutputStream {
-        private int x, z;
-
-        public ChunkBuffer(int x, int z) {
-            super(8096); // initialize to 8KB
-            this.x = x;
-            this.z = z;
-        }
-
-        public void close() {
-            RegionFile.this.write(x, z, buf, count);
-        }
-    }
-
-    /* write a chunk at (x,z) with length bytes of data to disk */
-    protected synchronized void write(int x, int z, byte[] data, int length) {
-        try {
-            int offset = getOffset(x, z);
-            int sectorNumber = offset >> 8;
-            int sectorsAllocated = offset & 0xFF;
-            int sectorsNeeded = (length + CHUNK_HEADER_SIZE) / SECTOR_BYTES + 1;
-
-            // maximum chunk size is 1MB
-            if (sectorsNeeded >= 256) {
-                return;
-            }
-
-            if (sectorNumber != 0 && sectorsAllocated == sectorsNeeded) {
-                /* we can simply overwrite the old sectors */
-                debug("SAVE", x, z, length, "rewrite");
-                write(sectorNumber, data, length);
-            } else {
-                /* we need to allocate new sectors */
-
-                /* mark the sectors previously used for this chunk as free */
-                for (int i = 0; i < sectorsAllocated; ++i) {
-                    sectorFree.set(sectorNumber + i, true);
-                }
-
-                /* scan for a free space large enough to store this chunk */
-                int runStart = sectorFree.indexOf(true);
-                int runLength = 0;
-                if (runStart != -1) {
-                    for (int i = runStart; i < sectorFree.size(); ++i) {
-                        if (runLength != 0) {
-                            if (sectorFree.get(i)) runLength++;
-                            else runLength = 0;
-                        } else if (sectorFree.get(i)) {
-                            runStart = i;
-                            runLength = 1;
-                        }
-                        if (runLength >= sectorsNeeded) {
-                            break;
-                        }
-                    }
-                }
-
-                if (runLength >= sectorsNeeded) {
-                    /* we found a free space large enough */
-                    debug("SAVE", x, z, length, "reuse");
-                    sectorNumber = runStart;
-                    setOffset(x, z, (sectorNumber << 8) | sectorsNeeded);
-                    for (int i = 0; i < sectorsNeeded; ++i) {
-                        sectorFree.set(sectorNumber + i, false);
-                    }
-                    write(sectorNumber, data, length);
-                } else {
-                    /*
-                     * no free space large enough found -- we need to grow the
-                     * file
-                     */
-                    debug("SAVE", x, z, length, "grow");
-                    file.seek(file.length());
-                    sectorNumber = sectorFree.size();
-                    for (int i = 0; i < sectorsNeeded; ++i) {
-                        file.write(emptySector);
-                        sectorFree.add(false);
-                    }
-                    sizeDelta += SECTOR_BYTES * sectorsNeeded;
-
-                    write(sectorNumber, data, length);
-                    setOffset(x, z, (sectorNumber << 8) | sectorsNeeded);
-                }
-            }
-            setTimestamp(x, z, (int) (System.currentTimeMillis() / 1000L));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /* write a chunk data to the region file at specified sector number */
-    private void write(int sectorNumber, byte[] data, int length) throws IOException {
-        debugln(" " + sectorNumber);
-        file.seek(sectorNumber * SECTOR_BYTES);
-        file.writeInt(length + 1); // chunk length
-        file.writeByte(VERSION_DEFLATE); // chunk version number
-        file.write(data, 0, length); // chunk data
-    }
-
     /* is this an invalid chunk coordinate? */
     private boolean outOfBounds(int x, int z) {
         return x < 0 || x >= 32 || z < 0 || z >= 32;
@@ -356,18 +248,6 @@ public class RegionFile {
 
     public boolean hasChunk(int x, int z) {
         return getOffset(x, z) != 0;
-    }
-
-    private void setOffset(int x, int z, int offset) throws IOException {
-        offsets[x + z * 32] = offset;
-        file.seek((x + z * 32) * 4);
-        file.writeInt(offset);
-    }
-
-    private void setTimestamp(int x, int z, int value) throws IOException {
-        chunkTimestamps[x + z * 32] = value;
-        file.seek(SECTOR_BYTES + (x + z * 32) * 4);
-        file.writeInt(value);
     }
 
     public void close() throws IOException {
