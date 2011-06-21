@@ -2,16 +2,13 @@ import processing.core._
 
 object ProcessingTest extends AppletWithCamera {
 
-  var ang = 0f
   var rows = 21
   var cols = 21
   var cubeCount = rows*cols
   var colSpan = 0
   var rowSpan = 0
-  var rotspd = 2.0f
   var cubes = new Array[Cube](cubeCount)
   var angs = new Array[Float](cubeCount)
-  var rotvals = new Array[Float](cubeCount)
   
   override def setup(){
     noCursor
@@ -23,8 +20,6 @@ object ProcessingTest extends AppletWithCamera {
     // instantiate cubes
     for (i <- 0 until cubeCount){
       cubes(i) = new Cube(12, 12, 12, 0, 0, 0,this)
-      rotspd += .01f
-      rotvals(i) = rotspd
     }   
   }
 
@@ -45,7 +40,7 @@ object ProcessingTest extends AppletWithCamera {
     ambientLight(170, 170, 100) 
 
     // Translate, rotate and draw cubes
-    for (i <- 0 until cols){
+    for (i <- 0 until cols)
       for (j <- 0 until rows){
     	pushMatrix()
     	/* Translate each block.
@@ -55,17 +50,10 @@ object ProcessingTest extends AppletWithCamera {
          owns center */
     	translate(i * colSpan, j * rowSpan,-100)
     	//rotate each cube around y and x axes
-    	rotateY(PApplet.radians(angs(cubeCounter)))
-    	rotateX(PApplet.radians(angs(cubeCounter)))
     	cubes(cubeCounter).drawCube()
     	popMatrix()
     	cubeCounter+=1
       }
-    }
-    // Angs used in rotate function calls above
-    for (i <- 0 until cubeCount){
-      angs(i) += rotvals(i)/2
-    }
   }
 
   override def keyPressed(): Unit = {
