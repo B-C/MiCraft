@@ -1,6 +1,6 @@
 import processing.core._
 
-object ProcessingTest extends PApplet {
+object ProcessingTest extends AppletWithCamera {
 
   var ang = 0f
   var rows = 21
@@ -13,10 +13,6 @@ object ProcessingTest extends PApplet {
   var angs = new Array[Float](cubeCount)
   var rotvals = new Array[Float](cubeCount)
   
-  var cameraFF =  new Camera(new PVector(70f, 35.0f, 120), 
-			     new PVector(width/2.0f, height/2.0f, 0), 
-			     false, this)
-
   override def setup(){
     noCursor
     size(640, 360, PConstants.P3D)
@@ -37,7 +33,7 @@ object ProcessingTest extends PApplet {
     background(0)
     fill(200)
 
-    cameraFF()
+    camera
     DebugMiCraft.drawMark(this)
     noStroke
     
@@ -73,32 +69,11 @@ object ProcessingTest extends PApplet {
   }
 
   override def keyPressed(): Unit = {
-    import java.awt.event.KeyEvent
-    if (key == PConstants.CODED)
-      keyCode match{
-	case PConstants.RIGHT => cameraFF.lookRight
-	case PConstants.LEFT => cameraFF.lookLeft
- 	case PConstants.UP => cameraFF.lookUp
-	case PConstants.DOWN => cameraFF.lookDown
-	case KeyEvent.VK_PAGE_UP => cameraFF.moveUp(20)
-	case KeyEvent.VK_PAGE_DOWN => cameraFF.moveDown(20)
-	case _ => ()
-      }
-    else
-      key.toUpper match{
-	case 'A' => cameraFF.verticalMotion = !cameraFF.verticalMotion
-	case 'Z' => cameraFF.walkForward(20)
-	case 'S' => cameraFF.walkBackwards(20)
-	case 'Q' => cameraFF.strafeLeft(20)
-	case 'D' => cameraFF.strafeRight(20)
-	case _   => ()
-      }
+    super.keyPressed()
   }
 
-  override def mouseMoved(): Unit = cameraFF.mouseMotion(mouseX, mouseY)
-
   def main(args: Array[String]): Unit = {
-    var frame = new javax.swing.JFrame("Test")
+    var frame = new javax.swing.JFrame("MiCraft")
     var applet = ProcessingTest
     frame.getContentPane().add(applet)
     applet.init
