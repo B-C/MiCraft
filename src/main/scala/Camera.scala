@@ -1,6 +1,7 @@
 import processing.core._
 
-class Camera(var position: PVector, var target: PVector, parent:PApplet){
+class Camera(var position: PVector, var target: PVector, 
+	     var verticalMotion:Boolean, parent:PApplet){
   
   var forward = new PVector(0,0,0)
   var left = new PVector(0,0,0)
@@ -12,13 +13,14 @@ class Camera(var position: PVector, var target: PVector, parent:PApplet){
 
   val up = new PVector(0,0,1)
 
-  val sensivity:Float = 0.1f
+  val mouseSensivity:Float = 0.1f
+  val lookKeySensivity:Float = 1f
+  
+  vectorsFromAngles
 
-//var verticalMotionActive: Boolean  
+  /******************************************************/
 
-  VectorsFromAngles
-
-  def VectorsFromAngles(): Unit ={
+  private def vectorsFromAngles(): Unit ={
     if (phi > 89)
         phi = 89
     else if (phi < -89)
@@ -29,7 +31,7 @@ class Camera(var position: PVector, var target: PVector, parent:PApplet){
     forward.z = PApplet.sin(PApplet.radians(phi))
     forward.x = r_temp*PApplet.cos(PApplet.radians(theta))
     forward.y = r_temp*PApplet.sin(PApplet.radians(theta))
-
+   
 
     left = up.cross(forward)
     left.normalize
@@ -38,11 +40,22 @@ class Camera(var position: PVector, var target: PVector, parent:PApplet){
     target = PVector.add(position, forward)
   }
 
+  private def rotation(dTheta:Float, dPhi:Float): Unit = {
+    theta -= dTheta
+    phi -= dPhi
+    vectorsFromAngles
+  }
+
+  /******************************************************/
+
   def walkForward(distance:Float):Unit = {
-    position.add(PVector.mult(forward,distance))
+    var v = PVector.mult(forward, distance)
+    if (!verticalMotion) v.z=0
+    position.add(v)
     target = PVector.add(position, forward)
   }
   def walkBackwards(distance: Float): Unit = walkForward(-distance)
+
   def strafeLeft(distance: Float): Unit = {
     position.add(PVector.mult(left,distance))
     target = PVector.add(position, forward)
@@ -55,16 +68,22 @@ class Camera(var position: PVector, var target: PVector, parent:PApplet){
   }
   def moveDown(distance:Float): Unit = moveUp(-distance)
 
+
+
+  def lookUp = rotation(0,lookKeySensivity)
+  def lookDown = rotation(0,-lookKeySensivity)
+  def lookLeft = rotation(-lookKeySensivity,0)
+  def lookRight = rotation(lookKeySensivity,0)
+
   def mouseMotion(x:Int, y:Int): Unit = {
-    theta -= (x - lastMouseX) *sensivity
-    phi -= (y - lastMouseY) *sensivity
+    rotation((x - lastMouseX) *mouseSensivity,(y - lastMouseY) *mouseSensivity)
 
     lastMouseX = x
     lastMouseY = y
-
-    VectorsFromAngles
   }
 
   def apply(): Unit =
-    parent.camera(position.x, position.y, position.z, target.x, target.y, target.z, 0, 0, 1)
+    parent.camera(position.x, position.y, position.z, 
+		  target.x, target.y, target.z, 
+		  0, 0, 1)
 }

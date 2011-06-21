@@ -13,7 +13,9 @@ object ProcessingTest extends PApplet {
   var angs = new Array[Float](cubeCount)
   var rotvals = new Array[Float](cubeCount)
   
-  var cameraFF =  new Camera(new PVector(70f, 35.0f, 120), new PVector(width/2.0f, height/2.0f, 0), this)
+  var cameraFF =  new Camera(new PVector(70f, 35.0f, 120), 
+			     new PVector(width/2.0f, height/2.0f, 0), 
+			     false, this)
 
   override def setup(){
     noCursor
@@ -21,7 +23,6 @@ object ProcessingTest extends PApplet {
 
     colSpan = width/(cols-1)
     rowSpan = height/(rows-1)
-    noStroke() 
 
     // instantiate cubes
     for (i <- 0 until cubeCount){
@@ -36,7 +37,9 @@ object ProcessingTest extends PApplet {
     background(0)
     fill(200)
 
-    cameraFF() 
+    cameraFF()
+    DebugMiCraft.drawMark(this)
+    noStroke
     
     // Set up some different colored lights
     pointLight(51, 102, 255, width/3f, height/2f, 100) 
@@ -70,17 +73,26 @@ object ProcessingTest extends PApplet {
   }
 
   override def keyPressed(): Unit = {
-    var keyIndex:Int = -1
-
-    key.toUpper match{
-      case 'Z' => cameraFF.walkForward(20)
-      case 'S' => cameraFF.walkBackwards(20)
-      case 'Q' => cameraFF.strafeLeft(20)
-      case 'D' => cameraFF.strafeRight(20)
-      case 'U' => cameraFF.moveUp(20)
-      case 'I' => cameraFF.moveDown(20)
-      case _   => ()
-    }
+    import java.awt.event.KeyEvent
+    if (key == PConstants.CODED)
+      keyCode match{
+	case PConstants.RIGHT => cameraFF.lookRight
+	case PConstants.LEFT => cameraFF.lookLeft
+ 	case PConstants.UP => cameraFF.lookUp
+	case PConstants.DOWN => cameraFF.lookDown
+	case KeyEvent.VK_PAGE_UP => cameraFF.moveUp(20)
+	case KeyEvent.VK_PAGE_DOWN => cameraFF.moveDown(20)
+	case _ => ()
+      }
+    else
+      key.toUpper match{
+	case 'A' => cameraFF.verticalMotion = !cameraFF.verticalMotion
+	case 'Z' => cameraFF.walkForward(20)
+	case 'S' => cameraFF.walkBackwards(20)
+	case 'Q' => cameraFF.strafeLeft(20)
+	case 'D' => cameraFF.strafeRight(20)
+	case _   => ()
+      }
   }
 
   override def mouseMoved(): Unit = cameraFF.mouseMotion(mouseX, mouseY)
