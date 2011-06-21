@@ -4,7 +4,7 @@
  *        Option ?
  */
 
-sealed abstract class Tag(name: String, value: Option[Any])
+sealed abstract class Tag(name: String, value: Any)
 
 // TYPE: 0  NAME: TAG_End
 // Payload: None.
@@ -13,55 +13,61 @@ case class EndTag() extends Tag("", None)
 
 // TYPE: 1  NAME: TAG_Byte
 // Payload: A single signed byte (8 bits)
-case class ByteTag(name: String, value:Byte) extends Tag(name, Option(value))
+case class ByteTag(name: String, value:Byte) extends Tag(name, value)
 
 // TYPE: 2  NAME: TAG_Short
 // Payload: A signed short (16 bits, big endian)
-case class ShortTag(name: String, value:Short) extends Tag(name, Option(value))
+case class ShortTag(name: String, value:Short) extends Tag(name, value)
 
 // TYPE: 3  NAME: TAG_Int
 // Payload: A signed short (32 bits, big endian)
-case class IntTag(name: String, value:Int) extends Tag(name, Option(value))
+case class IntTag(name: String, value:Int) extends Tag(name, value)
 
 // TYPE: 4  NAME: TAG_Long
 // Payload: A signed long (64 bits, big endian)
-case class LongTag(name: String, value:Long) extends Tag(name, Option(value))
+case class LongTag(name: String, value:Long) extends Tag(name, value)
 
 // TYPE: 5  NAME: TAG_Float
 // Payload: A floating point value (32 bits, big endian, IEEE 754-2008, binary32)
-case class FloatTag(name: String, value:Float) extends Tag(name, Option(value))
+case class FloatTag(name: String, value:Float) extends Tag(name, value)
 
 // TYPE: 6  NAME: TAG_Double
 // Payload: A floating point value (64 bits, big endian, IEEE 754-2008, binary64)
-case class DoubleTag(name: String, value:Double) extends Tag(name, Option(value))
+case class DoubleTag(name: String, value:Double) extends Tag(name, value)
 
 // TYPE: 7  NAME: TAG_Byte_Array
 // Payload: TAG_Int length 
 //          An array of bytes of unspecified format. The length of this array is <length> bytes
-case class ByteArrayTag(name: String, value:Array[Byte]) extends Tag(name, Option(value)){
+case class ByteArrayTag(name: String, value:Array[Byte]) extends Tag(name, value){
   override def toString = "ByteArrayTag(" + name + "," + value.length + " bytes)"
 }
 
 // TYPE: 8  NAME: TAG_String
 // Payload: TAG_Short length 
 //          An array of bytes defining a string in UTF-8 format. The length of this array is <length> bytes
-case class StringTag(name: String, value: String) extends Tag(name, Some(value))
+case class StringTag(name: String, value: String) extends Tag(name, value)
 
 // TYPE: 9  NAME: TAG_List
 // Payload: TAG_Byte tagId
 //          TAG_Int length
 //          A sequential list of Tags (not Named Tags), of type <typeId>. The length of this array is <length> Tags
 // Notes:   All tags share the same type.
-case class ListTag(name: String, value: List[Tag]) extends Tag(name, Some(value)){
+case class ListTag(name: String, value: List[Tag]) extends Tag(name, value){
   override def toString = 
     "ListTag(" + name + ")" + value.map(_.toString.replaceAll("\n","\n\t")).mkString("{\n\t", "\n\t", "\n}")
 }
 
 // TYPE: 10 NAME: TAG_Compound
 // Payload: A sequential list of Named Tags. This array keeps going until a TAG_End is found.
-case class CompoundTag(name: String, value: List[Tag]) extends Tag(name, Some(value)){
+case class CompoundTag(name: String, value: List[Tag]) extends Tag(name, value){
   override def toString = 
     "CompoundTag(" + name + ")" + value.map(_.toString.replaceAll("\n","\n\t")).mkString("{\n\t", "\n\t", "\n}")
+  def get(key:String) = value.find( _ match {
+    case _ :EndTag => false
+    case t :Tag { def name():String } => t.name == key
+    case _ => false
+  })
+	       
 }
 
 
