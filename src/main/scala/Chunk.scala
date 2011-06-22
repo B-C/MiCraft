@@ -12,9 +12,9 @@ case class Chunk(tag: Tag){
     blockData.value(y + (z * 128) + (x * 128 * 16))
 }
 
-class ChunkDrawable(tag: Tag, parent: processing.core.PApplet) extends Chunk(tag) {
+class ChunkDrawable(tag: Tag) extends Chunk(tag) {
   
-  def draw = {
+  def draw(parent: processing.core.PApplet) = {
     for(x <- 0 until 16)
       for(z <- 0 until 16)
 	for(y <- 0 until 128){
@@ -22,7 +22,7 @@ class ChunkDrawable(tag: Tag, parent: processing.core.PApplet) extends Chunk(tag
 	  if (id>=1){
 	    parent.pushMatrix
 	    parent.translate(x * Block.SIZE, z * Block.SIZE, y * Block.SIZE)
-	    Block(id, parent).draw
+	    Block(id).draw(parent)
 	    parent.popMatrix
 	  }
 	}

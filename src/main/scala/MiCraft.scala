@@ -3,8 +3,7 @@ import processing.core._
 object MiCraft extends AppletWithCamera {
 
   var chunk = new ChunkDrawable(Tag(RegionFile(
-    "/home/wrath/Programmation/PLNC/scala/minecraft/src/main/resources",0,5)),
-			      this)
+    "/home/wrath/Programmation/PLNC/scala/minecraft/src/main/resources",0,5)))
 
 
 
@@ -22,13 +21,13 @@ object MiCraft extends AppletWithCamera {
     noStroke
     
     // Set up some different colored lights
-    pointLight(51, 102, 255, width/3f, height/2f, 100) 
-    pointLight(200, 40, 60,  width/1.5f, height/2f, -150)
+  //  pointLight(51, 102, 255, width/3f, height/2f, 100) 
+    //pointLight(200, 40, 60,  width/1.5f, height/2f, -150)
 
     // Raise overall light in scene 
-    ambientLight(170, 170, 100) 
+//    ambientLight(170, 170, 100) 
 
-    chunk.draw
+    chunk.draw(this)
   }
 
   override def keyPressed(): Unit = {
