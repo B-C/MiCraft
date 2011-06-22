@@ -14,7 +14,7 @@ object MiCraft extends AppletWithCamera {
   }
 
   override def draw(){
-    background(0)
+    background(9,125,208)
 
     camera
     DebugMiCraft.drawMark(this)

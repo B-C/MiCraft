@@ -21,7 +21,7 @@ class ChunkDrawable(tag: Tag) extends Chunk(tag) {
 	  var id = getBlock(x,y,z)
 	  if (id>=1){
 	    parent.pushMatrix
-	    parent.translate(x * Block.SIZE, z * Block.SIZE, y * Block.SIZE)
+	    parent.translate(x * Block.SIZE, z * Block.SIZE, -y * Block.SIZE)
 	    Block(id).draw(parent)
 	    parent.popMatrix
 	  }
