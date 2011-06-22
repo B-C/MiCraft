@@ -46,7 +46,7 @@ class ChunkDrawable(tag: Tag, var _visibleBlocks: List[Int]) extends Chunk(tag) 
 	  var id = blockData.value(counter)
 	  if (id>=1 && drawable(counter)){
 	    parent.pushMatrix
-	    parent.translate(x * Block.SIZE, z * Block.SIZE, -y * Block.SIZE)
+	    parent.translate((this.x*16+x) * Block.SIZE, (this.z*16+z) * Block.SIZE, -y * Block.SIZE)
 	    parent.scale(Block.SIZE/2)
 	    Block.draw(id,parent)
 	    parent.popMatrix

@@ -1,19 +1,20 @@
 import processing.core._
 
 object MiCraft extends AppletWithCamera {
-  
-  
-  var visibleBlocks: List[Int] = List(8,910,11) //lava water visible
-  var chunk = new ChunkDrawable(Tag(RegionFile("src/main/resources",0,5)), visibleBlocks)
 
 
+  var visibleBlocks: List[Int] = List(8,9,10,11) //lava water visible
+  var chunks: Array[ChunkDrawable] = Array(
+    new ChunkDrawable(Tag(RegionFile("src/main/resources",-1,1)), visibleBlocks),
+    new ChunkDrawable(Tag(RegionFile("src/main/resources",-1,-1)), visibleBlocks),
+    new ChunkDrawable(Tag(RegionFile("src/main/resources",-1,0)), visibleBlocks),
+    new ChunkDrawable(Tag(RegionFile("src/main/resources",0,-1)), visibleBlocks))
 
-  
   override def setup(){
     noCursor
     size(640, 360, PConstants.P3D)
     textureMode(PConstants.NORMALIZED)
-   // noStroke
+     noStroke
   }
 
   override def draw(){
@@ -24,17 +25,21 @@ object MiCraft extends AppletWithCamera {
     DebugMiCraft.drawMark(this)
     noStroke
     /**/
-   
-    
+
+
     // Set up some different colored lights
-    //pointLight(51, 102, 255, width/3f, height/2f, 100) 
+    //pointLight(51, 102, 255, width/3f, height/2f, 100)
     //pointLight(200, 40, 60,  width/1.5f, height/2f, -150)
 
-    // Raise overall light in scene 
-    //ambientLight(170, 170, 100) 
+    // Raise overall light in scene
+    //ambientLight(170, 170, 100)
 
-    chunk.draw(this)
+    chunks foreach chunkDraw
   }
+
+  // use lambda instead
+  def chunkDraw(c:ChunkDrawable) = c.draw(this)
+  def chunkUpdate(c:ChunkDrawable) = c.visibleBlocks(visibleBlocks)
 
   def listUpdate(id:Int) = {
     if(visibleBlocks.exists(_==id))
@@ -42,9 +47,10 @@ object MiCraft extends AppletWithCamera {
     else
       visibleBlocks=id::visibleBlocks
 
-    chunk.visibleBlocks(visibleBlocks)
+    chunks foreach chunkUpdate
   }
-       
+
+  
 
   override def keyPressed(): Unit = {
     import java.awt.event.KeyEvent
