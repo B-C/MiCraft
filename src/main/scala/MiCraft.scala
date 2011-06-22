@@ -2,8 +2,7 @@ import processing.core._
 
 object MiCraft extends AppletWithCamera {
 
-  var chunk = new ChunkDrawable(Tag(RegionFile(
-    "/home/wrath/Programmation/PLNC/scala/minecraft/src/main/resources",0,5)))
+  var chunk = new ChunkDrawable(Tag(RegionFile("src/main/resources",0,5)))
 
 
 
@@ -11,21 +10,26 @@ object MiCraft extends AppletWithCamera {
   override def setup(){
     noCursor
     size(640, 360, PConstants.P3D)
+    textureMode(PConstants.NORMALIZED)
+   // noStroke
   }
 
   override def draw(){
     background(9,125,208)
-
     camera
+
+    /***/
     DebugMiCraft.drawMark(this)
     noStroke
+    /**/
+   
     
     // Set up some different colored lights
-  //  pointLight(51, 102, 255, width/3f, height/2f, 100) 
+    //pointLight(51, 102, 255, width/3f, height/2f, 100) 
     //pointLight(200, 40, 60,  width/1.5f, height/2f, -150)
 
     // Raise overall light in scene 
-//    ambientLight(170, 170, 100) 
+    //ambientLight(170, 170, 100) 
 
     chunk.draw(this)
   }
