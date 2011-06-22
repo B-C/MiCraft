@@ -1,0 +1,14 @@
+MiCraft
+-------
+
+Minecraft map viewer by Bertrand Chazot
+PLNC 2011
+Télécom ParisTech
+
+(tested with Scala 2.9, Processing 1.5.1)
+________________________________________
+
+In order to compile:
+- create a sbt project
+- download processing: http://processing.org/download/
+- copy <processing>/lib/core.jar in <project>/lib
