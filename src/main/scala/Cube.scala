@@ -121,8 +121,8 @@ object Block{
     70 -> missing,    // STONE_PRESSURE_PLATE
     71 -> missing,    // IRON_DOOR
     72 -> missing,    // WOODEN_PRESSURE_PLATE
-    73 -> missing,    // REDSTONE_ORE
-    74 -> missing,    // GLOWING_REDSTONE_ORE
+    73 -> tool.loadImage(path+"redstone_ore"+".png")
+    74 -> tool.loadImage(path+"redstone_ore"+".png")
     75 -> missing,    // REDSTONE_TORCH_OFF
     76 -> missing,    // REDSTONE_TORCH_ON
     77 -> missing,    // STONE_BUTTON
