@@ -2,7 +2,7 @@ import processing.core._
 
 object MiCraft extends AppletWithCamera {
 
-  var chunk = new ChunkDrawable(Tag(RegionFile("src/main/resources",0,5)))
+  var chunk = new ChunkDrawable(Tag(RegionFile("src/main/resources",0,5)), List(16))
 
 
 

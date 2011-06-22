@@ -11,19 +11,22 @@ case class Chunk(tag: Tag){
     blockData.value(y + z*128 + x*128*16)
 }
 
-class ChunkDrawable(tag: Tag) extends Chunk(tag) {
+class ChunkDrawable(tag: Tag, var _visibleBlocks: List[Int]) extends Chunk(tag) {
+  private val drawable = Array.ofDim[Boolean](16*128*16)
+  visibleBlocks(_visibleBlocks)
 
-  private val nbBlocks = 16*128*16
+  def visibleBlocks(l: List[Int]) = {
+    _visibleBlocks=l
 
-  val drawable = Array.ofDim[Boolean](nbBlocks)
-
-  for(x <- 0 until 16)
-    for(z <- 0 until 16)
-      for(y <- 0 until 128)
-	drawable(y + z*128 + x*128 *16)=isDrawable(x,y,z)
+    for(x <- 0 until 16)
+      for(z <- 0 until 16)
+	for(y <- 0 until 128)
+	  drawable(y + z*128 + x*128 *16)=isDrawable(x,y,z)
+  }
 
   private def isDrawable(x: Int, y:Int, z:Int): Boolean = {
-    if( y==127 || y==0 || x==15 || x==0 || z==15 || z==0)
+    if(_visibleBlocks.exists(_==getBlock(x,y,z)) ||
+       y==127 || y==0 || x==15 || x==0 || z==15 || z==0)
       true
     else
       getBlock(x+1,y,z)==0 ||
