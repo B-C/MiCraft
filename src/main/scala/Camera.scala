@@ -5,8 +5,8 @@ abstract class AppletWithCamera extends PApplet{
   private var lastMouseY = mouseY
   // do multikey: http://wiki.processing.org/w/Multiple_key_presses
 
-  private var cam = new Camera(new PVector(70f, 35.0f, 120), 
-			       new PVector(width/2.0f, height/2.0f, 0), false)
+  private var cam = new Camera(new PVector(70f, 35.0f, -120), 
+			       new PVector(width/2.0f, height/2.0f, -120), false)
 
   override def keyPressed(): Unit = {
     import java.awt.event.KeyEvent

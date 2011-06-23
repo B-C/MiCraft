@@ -13,8 +13,8 @@ object MiCraft extends AppletWithCamera {
   override def setup(){
     noCursor
     size(640, 360, PConstants.P3D)
-    textureMode(PConstants.NORMALIZED)
-     noStroke
+    textureMode(PConstants.NORMAL)
+    noStroke
   }
 
   override def draw(){
@@ -23,7 +23,6 @@ object MiCraft extends AppletWithCamera {
 
     /***/
     DebugMiCraft.drawMark(this)
-    noStroke
     /**/
 
 
@@ -34,12 +33,8 @@ object MiCraft extends AppletWithCamera {
     // Raise overall light in scene
     //ambientLight(170, 170, 100)
 
-    chunks foreach chunkDraw
+    chunks foreach(_.draw(this))
   }
-
-  // use lambda instead
-  def chunkDraw(c:ChunkDrawable) = c.draw(this)
-  def chunkUpdate(c:ChunkDrawable) = c.visibleBlocks(visibleBlocks)
 
   def listUpdate(id:Int) = {
     if(visibleBlocks.exists(_==id))
@@ -47,7 +42,7 @@ object MiCraft extends AppletWithCamera {
     else
       visibleBlocks=id::visibleBlocks
 
-    chunks foreach chunkUpdate
+    chunks foreach(_.visibleBlocks(visibleBlocks))
   }
 
   
