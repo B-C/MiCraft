@@ -30,7 +30,7 @@ class Level(path: String, var visibleBlocks: List[Int]){
       RegionFile(path,i,j) map ( is => new ChunkDrawable(Tag(is), visibleBlocks, this))
 
   def draw(camX: Int, camZ: Int, parent: processing.core.PApplet) ={
-    val chunkX = camX/Block.SIZE/16
+    val chunkX = -camX/Block.SIZE/16
     val chunkZ = camZ/Block.SIZE/16
 
     for(i <- chunkX-BLOCK_DRAW until chunkX+BLOCK_DRAW)
@@ -46,5 +46,3 @@ class Level(path: String, var visibleBlocks: List[Int]){
 	}
   }
 }
-
-//Us offset LEVEL_SIZE/2 in order to get -1,-1...

@@ -93,7 +93,7 @@ object MiCraftLoader {
       val playerRotation =
 	player.get("Rotation").get.asInstanceOf[ListTag].value.asInstanceOf[List[FloatTag]]
 
-      new Camera(new PVector(playerPos(0).value.toFloat*Block.SIZE,
+      new Camera(new PVector(-playerPos(0).value.toFloat*Block.SIZE,
 			     playerPos(2).value.toFloat*Block.SIZE,
 			     -playerPos(1).value.toFloat*Block.SIZE),
 		 playerRotation(1).value, playerRotation(0).value, false)
@@ -104,7 +104,6 @@ object MiCraftLoader {
 
   def main(args: Array[String]): Unit = {
     val path = chooseMap
-    //var path = "src/main/resources"
 
     val levelTag = readLevelDat(new File(path+"/level.dat"))
     val levelData = levelTag.get("Data").get.asInstanceOf[CompoundTag]

@@ -126,7 +126,7 @@ class Camera(var position: PVector,
   def lookRight = rotation(lookKeySensivity,0)
 
   def mouseMotion(x: Int, y: Int) =
-    rotation(x*mouseSensivity, y*mouseSensivity)
+    rotation(x*mouseSensivity, -y*mouseSensivity)
 
   def apply(parent: PApplet): Unit =
     parent.camera(position.x, position.y, position.z,

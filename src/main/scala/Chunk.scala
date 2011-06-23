@@ -68,7 +68,7 @@ class ChunkDrawable(tag: Tag, var _visibleBlocks: List[Int], level: Level) exten
 	  var id = blockData.value(counter)
 	  if (drawable(counter)){
 	    parent.pushMatrix
-	    parent.translate((xOffset+x)*Block.SIZE,
+	    parent.translate(-(xOffset+x)*Block.SIZE,
 			     (zOffset+z)*Block.SIZE,
 			     -y*Block.SIZE)
 	    parent.scale(Block.SIZE/2)
