@@ -46,7 +46,8 @@ class Camera(var position: PVector,
 	     private var target: PVector,
 	     var verticalMotion:Boolean){
 
-  private var forward = new PVector(0,0,0)
+  private var forward3D = new PVector(0,0,0)
+  private var forward2D = new PVector(0,0,0)
   private var left = new PVector(0,0,0)
   private var theta = 0f
   private var phi = 0f
@@ -67,34 +68,38 @@ class Camera(var position: PVector,
     else if (phi < -89)
       phi = -89
 
+    forward2D.x=PApplet.cos(PApplet.radians(theta))
+    forward2D.y=PApplet.sin(PApplet.radians(theta))
+
     // spherical coordinate to cartesian
     var r = PApplet.cos(PApplet.radians(phi))
-    forward.z = PApplet.sin(PApplet.radians(phi))
-    forward.x = r*PApplet.cos(PApplet.radians(theta))
-    forward.y = r*PApplet.sin(PApplet.radians(theta))
+    forward3D.z = PApplet.sin(PApplet.radians(phi))
+    forward3D.x = r*forward2D.x
+    forward3D.y = r*forward2D.y
 
-    left = up.cross(forward)
+    left = up.cross(forward3D)
     left.normalize
 
     // compute where the camera look
-    target = PVector.add(position, forward)
+    target = PVector.add(position, forward3D)
   }
 
   private def walk(distance: Float):Unit = {
-    var v = PVector.mult(forward, distance)
-    if (!verticalMotion) v.z = 0
+    var v = if (!verticalMotion) PVector.mult(forward2D, distance)
+	    else PVector.mult(forward3D, distance)
+
     position.add(v)
-    target = PVector.add(position, forward)
+    target = PVector.add(position, forward3D)
   }
 
   private def strafe(distance: Float): Unit = {
     position.add(PVector.mult(left,distance))
-    target = PVector.add(position, forward)
+    target = PVector.add(position, forward3D)
   }
 
   private def moveZ(distance:Float): Unit = {
     position.add(PVector.mult(up, -distance))
-    target = PVector.add(position, forward)
+    target = PVector.add(position, forward3D)
   }
 
   private def rotation(dTheta:Float, dPhi:Float): Unit = {
