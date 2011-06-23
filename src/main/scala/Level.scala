@@ -17,13 +17,17 @@ class Level(path: String, var visibleBlocks: List[Int]){
   }
 
   def isInLevel(x: Int,z: Int): Boolean =
-    !(x<0 || x>=LEVEL_SIZE || z<0 || z>=LEVEL_SIZE)
+    !(x < -LEVEL_SIZE/2 || x >= LEVEL_SIZE/2 || z < -LEVEL_SIZE/2 || z >= LEVEL_SIZE/2)
 
   def getChunk(x: Int,z: Int): Option[ChunkDrawable] =
-    if(isInLevel(x,z)) chunks(x)(z) else None
+    if(isInLevel(x, z))
+      chunks(x+LEVEL_SIZE/2)(z+LEVEL_SIZE/2)
+    else
+      None
 
   def loadChunk(i: Int, j:Int): Unit =
-    chunks(i)(j) = RegionFile(path,i,j) map ( is => new ChunkDrawable(Tag(is), visibleBlocks, this))
+    chunks(i+LEVEL_SIZE/2)(j+LEVEL_SIZE/2) =
+      RegionFile(path,i,j) map ( is => new ChunkDrawable(Tag(is), visibleBlocks, this))
 
   def draw(camX: Int, camZ: Int, parent: processing.core.PApplet) ={
     val chunkX = camX/Block.SIZE/16
@@ -32,12 +36,13 @@ class Level(path: String, var visibleBlocks: List[Int]){
     for(i <- chunkX-BLOCK_DRAW until chunkX+BLOCK_DRAW)
       for(j <- chunkZ-BLOCK_DRAW until chunkZ+BLOCK_DRAW)
 	if(isInLevel(i,j)) {
-	  if(chunks(i)(j)==None){
-	    println("Load Chunk "+i+", "+j)
+	  if(getChunk(i,j)==None){// XXX try to load many time chunks that don't exist
+	    println("Loading Chunk "+i+", "+j)
 	    loadChunk(i,j)
+	    println("Chunk "+i+", "+j+" Loaded")
 	  }
 
-	  chunks(i)(j) map (_.draw(parent))
+	  getChunk(i,j) map (_.draw(parent))
 	}
   }
 }
