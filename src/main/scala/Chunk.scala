@@ -79,4 +79,5 @@ class ChunkDrawable(tag: Tag, var _visibleBlocks: List[Int], level: Level) exten
       }
     }
   }
+
 }

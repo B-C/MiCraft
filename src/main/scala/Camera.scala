@@ -5,7 +5,7 @@ abstract class AppletWithCamera extends PApplet{
   private var lastMouseY = mouseY
   // do multikey: http://wiki.processing.org/w/Multiple_key_presses
 
-  private var cam = new Camera(new PVector(70f, 35.0f, -120), 
+  protected var cam = new Camera(new PVector(70f, 35.0f, -120),
 			       new PVector(width/2.0f, height/2.0f, -120), false)
 
   override def keyPressed(): Unit = {
@@ -42,8 +42,8 @@ abstract class AppletWithCamera extends PApplet{
   override def camera = cam(this)
 }
 
-class Camera(private var position: PVector, 
-	     private var target: PVector, 
+class Camera(var position: PVector,
+	     private var target: PVector,
 	     var verticalMotion:Boolean){
 
   private var forward = new PVector(0,0,0)
@@ -56,7 +56,7 @@ class Camera(private var position: PVector,
   val mouseSensivity = 0.1f
   val lookKeySensivity = 1f
   val speed = 20
-  
+
   vectorsFromAngles
 
   /******************************************************/
@@ -104,7 +104,7 @@ class Camera(private var position: PVector,
   }
 
   /******************************************************/
-  
+
   def walkForward = walk(speed)
   def walkBackward = walk(-speed)
 
@@ -123,6 +123,6 @@ class Camera(private var position: PVector,
     rotation(x*mouseSensivity, y*mouseSensivity)
 
   def apply(parent: PApplet): Unit =
-    parent.camera(position.x, position.y, position.z, 
+    parent.camera(position.x, position.y, position.z,
 		  target.x, target.y, target.z, 0, 0, 1)
 }

@@ -7,10 +7,6 @@ object MiCraft extends AppletWithCamera {
     size(640, 360, PConstants.P3D)
     textureMode(PConstants.NORMAL)
     noStroke
-
-    for(i <- 0 until 3)
-      for(j <- 0 until 3)
-	level.loadChunk(i,j)
   }
 
   override def draw(){
@@ -28,7 +24,7 @@ object MiCraft extends AppletWithCamera {
     // Raise overall light in scene
     //ambientLight(170, 170, 100)
 
-    level.draw(this)
+    level.draw(cam.position.x.toInt, cam.position.y.toInt,this)
   }
 
   override def keyPressed(): Unit = {
