@@ -1,0 +1,26 @@
+MiCraft
+-------
+
+Minecraft map viewer by Bertrand Chazot
+PLNC 2011
+Télécom ParisTech
+______________________________________________________
+
+Camera:
+	-Z/Q/S/D: move
+	-Right/Left/Up/Down or mouse: look around
+	-Page up: move up
+	-Page down: move down
+	-A: activate/desactivate vertical motion with Z/S
+
+Tool:
+	F1: highlight coal ore
+	F2: highlight iron ore
+	F3: highlight gold ore
+	F4: highlight diamond ore
+	F5: highlight lapis lazuli ore
+	F6: highlight redstone ore
+	F6: highlight pumpkin
+	F7: highlight clay
+	F8: highlight spawner
+	F9: highlight obsidian

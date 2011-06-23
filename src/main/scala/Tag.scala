@@ -1,7 +1,5 @@
 /*
- * ToDo : Class List & Compound : factorize toString
- *        Tag.conpound : accu
- *        Option ?
+ * XXX to be cleaned
  */
 
 sealed abstract class Tag(name: String, value: Any)
@@ -36,14 +34,14 @@ case class FloatTag(name: String, value:Float) extends Tag(name, value)
 case class DoubleTag(name: String, value:Double) extends Tag(name, value)
 
 // TYPE: 7  NAME: TAG_Byte_Array
-// Payload: TAG_Int length 
+// Payload: TAG_Int length
 //          An array of bytes of unspecified format. The length of this array is <length> bytes
 case class ByteArrayTag(name: String, value:Array[Byte]) extends Tag(name, value){
   override def toString = "ByteArrayTag(" + name + "," + value.length + " bytes)"
 }
 
 // TYPE: 8  NAME: TAG_String
-// Payload: TAG_Short length 
+// Payload: TAG_Short length
 //          An array of bytes defining a string in UTF-8 format. The length of this array is <length> bytes
 case class StringTag(name: String, value: String) extends Tag(name, value)
 
@@ -53,23 +51,21 @@ case class StringTag(name: String, value: String) extends Tag(name, value)
 //          A sequential list of Tags (not Named Tags), of type <typeId>. The length of this array is <length> Tags
 // Notes:   All tags share the same type.
 case class ListTag(name: String, value: List[Tag]) extends Tag(name, value){
-  override def toString = 
+  override def toString =
     "ListTag(" + name + ")" + value.map(_.toString.replaceAll("\n","\n\t")).mkString("{\n\t", "\n\t", "\n}")
 }
 
 // TYPE: 10 NAME: TAG_Compound
 // Payload: A sequential list of Named Tags. This array keeps going until a TAG_End is found.
 case class CompoundTag(name: String, value: List[Tag]) extends Tag(name, value){
-  override def toString = 
+  override def toString =
     "CompoundTag(" + name + ")" + value.map(_.toString.replaceAll("\n","\n\t")).mkString("{\n\t", "\n\t", "\n}")
   def get(key:String) = value.find( _ match {
     case _ :EndTag => false
     case t :Tag { def name():String } => t.name == key
     case _ => false
   })
-	       
 }
-
 
 object Tag {
   import java.io.DataInputStream
@@ -85,7 +81,7 @@ object Tag {
       case 6 => DoubleTag(name, stream.readDouble())
       case 7 => {
 	var len = stream.readInt()
-	var data = Array.ofDim[Byte](len)	
+	var data = Array.ofDim[Byte](len)
 	stream.readFully(data)
 	ByteArrayTag(name, data)
       }
@@ -109,7 +105,7 @@ object Tag {
       case e:EndTag =>  List[Tag]() ;
       case t:Tag => t :: compound(stream)
     }
-  } 
+  }
 
   def apply(stream: DataInputStream ): Tag = {
     var tagType = stream.readByte()
@@ -119,7 +115,3 @@ object Tag {
       EndTag()
   }
 }
-
-
-
-

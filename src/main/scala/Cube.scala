@@ -1,4 +1,3 @@
-import scala.collection.mutable.HashMap
 import processing.core._
 
 object TexturedCube{
@@ -44,6 +43,8 @@ object TexturedCube{
 object tool extends PApplet
 
 object Block{
+  import scala.collection.mutable.HashMap
+
   val SIZE = 16
   val path = "src/main/resources/"
 

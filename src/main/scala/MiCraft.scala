@@ -1,7 +1,6 @@
 import processing.core._
 
 class MiCraft(path:String, cam:Camera) extends AppletWithCamera(cam) {
-
   var level = new Level(path, List(7,8,9,10,11))//bedrock lava water visible
 
   override def setup(){
@@ -14,18 +13,6 @@ class MiCraft(path:String, cam:Camera) extends AppletWithCamera(cam) {
   override def draw(){
     background(9,125,208)
     camera
-
-    /***/
-    DebugMiCraft.drawMark(this)
-    /**/
-
-    // Set up some different colored lights
-    //pointLight(51, 102, 255, width/3f, height/2f, 100)
-    //pointLight(200, 40, 60,  width/1.5f, height/2f, -150)
-
-    // Raise overall light in scene
-    //ambientLight(170, 170, 100)
-
     level.draw(cam.position.x.toInt, cam.position.y.toInt,this)
   }
 
@@ -47,7 +34,6 @@ class MiCraft(path:String, cam:Camera) extends AppletWithCamera(cam) {
     	case _ => ()
       }
   }
-
 }
 
 object MiCraftLoader {

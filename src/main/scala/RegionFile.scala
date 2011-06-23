@@ -1,4 +1,3 @@
-
 object RegionFile {
   import com.mojang.RegionFileCache
   import java.io.File
@@ -10,5 +9,3 @@ object RegionFile {
       case stream => Some(stream)
     }
 }
-
-

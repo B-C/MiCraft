@@ -56,7 +56,7 @@ class Camera(var position: PVector,
 
   vectorsFromAngles
 
-  println("Camera inited at "
+  println("Camera initialized at "
 	  +position.x+", "
 	  +position.y+", "
 	  +position.z)
