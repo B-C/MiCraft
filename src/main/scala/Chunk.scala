@@ -12,7 +12,7 @@ case class Chunk(tag: Tag){
 }
 
 class ChunkDrawable(tag: Tag, var _visibleBlocks: List[Int], level: Level) extends Chunk(tag) {
-  private val drawable = Array.ofDim[Boolean](16*128*16)
+  val drawable = Array.ofDim[Boolean](16*128*16)
   val xOffset = xPos*16
   val zOffset = zPos*16
   visibleBlocks(_visibleBlocks)
@@ -34,10 +34,11 @@ class ChunkDrawable(tag: Tag, var _visibleBlocks: List[Int], level: Level) exten
 
     if(y == 0 || y == 127)
       return true
-    if(getBlock(x,y+1,z)==0 || getBlock(x,y-1,z)==0)
+    if(Block.isTransparent(getBlock(x,y+1,z)) ||
+       Block.isTransparent(getBlock(x,y-1,z)))
       return true
 
-    var blocks = Array(
+    var blocks:Array[Option[Int]] = Array(
       if(x==0)
 	level.getChunk(xPos-1,zPos) map (_.getBlock(15,y,z))
       else
@@ -55,7 +56,7 @@ class ChunkDrawable(tag: Tag, var _visibleBlocks: List[Int], level: Level) exten
       else
 	Some(getBlock(x,y,z+1)))
 
-    return !(blocks forall(_!=Some(0) ))
+    return !(blocks forall( b => !Block.isTransparent(b.getOrElse(1))))
   }
 
   def draw(parent: processing.core.PApplet) = {
