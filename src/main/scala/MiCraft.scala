@@ -1,6 +1,8 @@
-object MiCraft extends AppletWithCamera {
-  import processing.core._
-  var level = new Level("src/main/resources", List(7,8,9,10,11))//bedrock lava water visible
+import processing.core._
+
+class MiCraft(path:String) extends AppletWithCamera {
+
+  var level = new Level(path, List(7,8,9,10,11))//bedrock lava water visible
 
   override def setup(){
     noCursor
@@ -46,9 +48,20 @@ object MiCraft extends AppletWithCamera {
       }
   }
 
+}
+
+object MiCraftLoader {
+  
   def main(args: Array[String]): Unit = {
+    
+    
+    print("Path to map:\n> ")
+    var path = readLine
+//    var path = "src/main/resources"
+
     var frame = new javax.swing.JFrame("MiCraft")
-    var applet = MiCraft
+
+    var applet = new MiCraft(path)
     frame.getContentPane().add(applet)
     applet.init
     frame.pack
