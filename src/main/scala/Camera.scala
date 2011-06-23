@@ -1,12 +1,9 @@
 import processing.core._
 
-abstract class AppletWithCamera extends PApplet{
+abstract class AppletWithCamera(cam:Camera) extends PApplet{
   private var lastMouseX = mouseX
   private var lastMouseY = mouseY
   // do multikey: http://wiki.processing.org/w/Multiple_key_presses
-
-  protected var cam = new Camera(new PVector(70f, 35.0f, -120),
-			       new PVector(width/2.0f, height/2.0f, -120), false)
 
   override def keyPressed(): Unit = {
     import java.awt.event.KeyEvent
@@ -43,22 +40,26 @@ abstract class AppletWithCamera extends PApplet{
 }
 
 class Camera(var position: PVector,
-	     private var target: PVector,
+	     private var phi:Float, private var theta:Float,
 	     var verticalMotion:Boolean){
 
+  private var target = new PVector(0,0,0)
   private var forward3D = new PVector(0,0,0)
   private var forward2D = new PVector(0,0,0)
   private var left = new PVector(0,0,0)
-  private var theta = 0f
-  private var phi = 0f
 
   private val up = new PVector(0,0,1)
 
   val mouseSensivity = 0.1f
-  val lookKeySensivity = 1f
+  val lookKeySensivity = 4f
   val speed = 20
 
   vectorsFromAngles
+
+  println("Camera inited at "
+	  +position.x+", "
+	  +position.y+", "
+	  +position.z)
 
   /******************************************************/
 

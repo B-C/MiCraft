@@ -1,6 +1,6 @@
 import processing.core._
 
-class MiCraft(path:String) extends AppletWithCamera {
+class MiCraft(path:String, cam:Camera) extends AppletWithCamera(cam) {
 
   var level = new Level(path, List(7,8,9,10,11))//bedrock lava water visible
 
@@ -51,11 +51,20 @@ class MiCraft(path:String) extends AppletWithCamera {
 }
 
 object MiCraftLoader {
+  import java.io.File
+
+  val saves = new File(System.getProperty("user.home"), ".minecraft/saves")
+
+  def readLevelDat(f:File):CompoundTag ={
+    import java.io.DataInputStream
+    import java.io.FileInputStream
+    import java.util.zip.GZIPInputStream
+
+    var stream = new DataInputStream(new GZIPInputStream(new FileInputStream(f)))
+    Tag(stream).asInstanceOf[CompoundTag]
+  }
 
   def chooseMap(): String = {
-    import java.io.File
-
-    val saves = new File(System.getProperty("user.home"), ".minecraft/saves")
     val list = saves.list.filter(str => new File(saves, str).isDirectory)
     var i=0
 
@@ -74,11 +83,35 @@ object MiCraftLoader {
       saves.getAbsoluteFile+"/"+list(i)
   }
 
-  def main(args: Array[String]): Unit = {
-    var path = chooseMap
-    var applet = new MiCraft(path)
+  def initCamera(player:CompoundTag) ={
+    //dim 0 real world, -1 nether
+    val levelDimension = player.get("Dimension").get.asInstanceOf[IntTag].value
 
-    //var test = "src/main/resources"
+    if(levelDimension==0){
+      val playerPos =
+	player.get("Pos").get.asInstanceOf[ListTag].value.asInstanceOf[List[DoubleTag]]
+      val playerRotation =
+	player.get("Rotation").get.asInstanceOf[ListTag].value.asInstanceOf[List[FloatTag]]
+
+      new Camera(new PVector(playerPos(0).value.toFloat*Block.SIZE,
+			     playerPos(2).value.toFloat*Block.SIZE,
+			     -playerPos(1).value.toFloat*Block.SIZE),
+		 playerRotation(1).value, playerRotation(0).value, false)
+    }
+    else
+      new Camera(new PVector(70f, 35.0f, -120), 0, 0, false)
+  }
+
+  def main(args: Array[String]): Unit = {
+    val path = chooseMap
+    //var path = "src/main/resources"
+
+    val levelTag = readLevelDat(new File(path+"/level.dat"))
+    val levelData = levelTag.get("Data").get.asInstanceOf[CompoundTag]
+    val levelName = levelData.get("LevelName").get.asInstanceOf[StringTag].value
+    val levelPlayer = levelData.get("Player").get.asInstanceOf[CompoundTag]
+
+    var applet = new MiCraft(path, initCamera(levelPlayer))
 
     var frame = new javax.swing.JFrame("MiCraft")
 
