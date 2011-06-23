@@ -51,17 +51,37 @@ class MiCraft(path:String) extends AppletWithCamera {
 }
 
 object MiCraftLoader {
-  
+
+  def chooseMap(): String = {
+    import java.io.File
+
+    val saves = new File(System.getProperty("user.home"), ".minecraft/saves")
+    val list = saves.list.filter(str => new File(saves, str).isDirectory)
+    var i=0
+
+    println("Choose a map:")
+
+    list foreach (str => {println(i+": "+str); i+=1})
+    print(i+": Other\n> ")
+
+    i=readInt
+
+    if(i>=list.size || i<0){
+      print("Path to the map:\n> ")
+      readLine
+    }
+    else
+      saves.getAbsoluteFile+"/"+list(i)
+  }
+
   def main(args: Array[String]): Unit = {
-    
-    
-    print("Path to map:\n> ")
-    var path = readLine
-//    var path = "src/main/resources"
+    var path = chooseMap
+    var applet = new MiCraft(path)
+
+    //var test = "src/main/resources"
 
     var frame = new javax.swing.JFrame("MiCraft")
 
-    var applet = new MiCraft(path)
     frame.getContentPane().add(applet)
     applet.init
     frame.pack
