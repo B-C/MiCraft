@@ -1,6 +1,6 @@
 object MiCraft extends AppletWithCamera {
   import processing.core._
-  var level = new Level("src/main/resources", List(8,9,10,11))//lava water visible
+  var level = new Level("src/main/resources", List(7,8,9,10,11))//bedrock lava water visible
 
   override def setup(){
     noCursor
@@ -8,8 +8,8 @@ object MiCraft extends AppletWithCamera {
     textureMode(PConstants.NORMAL)
     noStroke
 
-    for(i <- 0 until 2)
-      for(j <- 0 until 2)
+    for(i <- 0 until 3)
+      for(j <- 0 until 3)
 	level.loadChunk(i,j)
   }
 
@@ -42,10 +42,10 @@ object MiCraft extends AppletWithCamera {
     	case KeyEvent.VK_F4  => level.updateVisibleBlocks(56) //diamond
     	case KeyEvent.VK_F5  => level.updateVisibleBlocks(21) //lapis lazuli
     	case KeyEvent.VK_F6  => level.updateVisibleBlocks(73) //redstone
-    	case KeyEvent.VK_F7  => level.updateVisibleBlocks(49) //obsidian
+    	case KeyEvent.VK_F7  => level.updateVisibleBlocks(86) //pumpkin
     	case KeyEvent.VK_F8  => level.updateVisibleBlocks(82) //clay
     	case KeyEvent.VK_F9  => level.updateVisibleBlocks(52) //spawner
-    	case KeyEvent.VK_F10 => level.updateVisibleBlocks(86) //pumpkin
+    	case KeyEvent.VK_F10 => level.updateVisibleBlocks(49) //obsidian
     	case _ => ()
       }
   }
