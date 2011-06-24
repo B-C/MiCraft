@@ -1,8 +1,9 @@
 import processing.core._
 
-abstract class AppletWithCamera(cam:Camera) extends PApplet{
+abstract class AppletWithCamera extends PApplet{
   private var lastMouseX = mouseX
   private var lastMouseY = mouseY
+  protected var cam:Camera
   // do multikey: http://wiki.processing.org/w/Multiple_key_presses
 
   override def keyPressed(): Unit = {

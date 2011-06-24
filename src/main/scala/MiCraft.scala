@@ -1,7 +1,8 @@
 import processing.core._
 
-class MiCraft(path:String, cam:Camera) extends AppletWithCamera(cam) {
-  var level = new Level(path)
+class MiCraft(path:String, levelData:CompoundTag) extends AppletWithCamera(MiCraft.initCamera(levelData)) {
+  private var level = new Level(path)
+  private var pause = false
 
   override def setup(){
     noCursor
@@ -31,6 +32,37 @@ class MiCraft(path:String, cam:Camera) extends AppletWithCamera(cam) {
     	case KeyEvent.VK_F8  => level.updateVisibleBlocks(82) //clay
     	case _ => ()
       }
+    else
+      key.toUpper match{
+	case 'P' => 
+	  if(pause){pause = false; loop}
+	  else{pause = true; noLoop}
+	case 'C' => cam=MiCraft.initCamera(levelData)
+	case 'R' => level.reset
+	case _   => ()
+      }
+  }
+}
+
+object MiCraft{
+  private def initCamera(levelData:CompoundTag) ={
+    val player = levelData.get("Player").get.asInstanceOf[CompoundTag]
+    //dim 0 real world, -1 nether
+    val levelDimension = player.get("Dimension").get.asInstanceOf[IntTag].value
+
+    if(levelDimension==0){
+      val playerPos =
+	player.get("Pos").get.asInstanceOf[ListTag].value.asInstanceOf[List[DoubleTag]]
+      val playerRotation =
+	player.get("Rotation").get.asInstanceOf[ListTag].value.asInstanceOf[List[FloatTag]]
+
+      new Camera(new PVector(-playerPos(0).value.toFloat*Block.SIZE,
+			     playerPos(2).value.toFloat*Block.SIZE,
+			     -playerPos(1).value.toFloat*Block.SIZE),
+		 playerRotation(1).value, playerRotation(0).value, false)
+    }
+    else
+      new Camera(new PVector(70f, 35.0f, -120), 0, 0, false)
   }
 }
 
@@ -67,24 +99,7 @@ object MiCraftLoader {
       saves.getAbsoluteFile+"/"+list(i)
   }
 
-  def initCamera(player:CompoundTag) ={
-    //dim 0 real world, -1 nether
-    val levelDimension = player.get("Dimension").get.asInstanceOf[IntTag].value
 
-    if(levelDimension==0){
-      val playerPos =
-	player.get("Pos").get.asInstanceOf[ListTag].value.asInstanceOf[List[DoubleTag]]
-      val playerRotation =
-	player.get("Rotation").get.asInstanceOf[ListTag].value.asInstanceOf[List[FloatTag]]
-
-      new Camera(new PVector(-playerPos(0).value.toFloat*Block.SIZE,
-			     playerPos(2).value.toFloat*Block.SIZE,
-			     -playerPos(1).value.toFloat*Block.SIZE),
-		 playerRotation(1).value, playerRotation(0).value, false)
-    }
-    else
-      new Camera(new PVector(70f, 35.0f, -120), 0, 0, false)
-  }
 
   def main(args: Array[String]): Unit = {
     val path = chooseMap
@@ -92,9 +107,8 @@ object MiCraftLoader {
     val levelTag = readLevelDat(new File(path+"/level.dat"))
     val levelData = levelTag.get("Data").get.asInstanceOf[CompoundTag]
     val levelName = levelData.get("LevelName").get.asInstanceOf[StringTag].value
-    val levelPlayer = levelData.get("Player").get.asInstanceOf[CompoundTag]
 
-    var applet = new MiCraft(path, initCamera(levelPlayer))
+    var applet = new MiCraft(path, levelData)
 
     var frame = new javax.swing.JFrame("MiCraft - "+levelName)
 

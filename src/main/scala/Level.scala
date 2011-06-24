@@ -4,9 +4,7 @@ class Level(path: String){
   private var chunks:Array[Array[Option[ChunkDrawable]]] = Array.ofDim(LEVEL_SIZE,LEVEL_SIZE)
   private var visibleBlocks: List[Int] = List()
 
-  for(i <- 0 until LEVEL_SIZE)
-    for(j <- 0 until LEVEL_SIZE)
-      chunks(i)(j)=None
+  reset
 
   def updateVisibleBlocks(id: Int): Unit = {
     if(visibleBlocks.exists(_==id))
@@ -49,5 +47,11 @@ class Level(path: String){
 
 	  getChunk(i,j) map (_.draw(parent))
 	}
+  }
+
+  def reset = {
+    for(i <- 0 until LEVEL_SIZE)
+      for(j <- 0 until LEVEL_SIZE)
+	chunks(i)(j)=None
   }
 }

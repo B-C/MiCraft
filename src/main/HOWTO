@@ -13,7 +13,7 @@ Camera:
 	-Page down: move down
 	-A: activate/desactivate vertical motion with Z/S
 
-Tool:
+Show blocks:
 	F1: highlight coal ore
 	F2: highlight iron ore
 	F3: highlight gold ore
@@ -22,3 +22,8 @@ Tool:
 	F6: highlight redstone ore
 	F7: highlight obsidian
 	F8: highlight clay
+
+Other:
+	P: pause/unpause
+	C: go back to the start postion
+	R: reload the map
