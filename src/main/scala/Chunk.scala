@@ -11,35 +11,77 @@ case class Chunk(tag: Tag){
     blockData.value(y + z*128 + x*128*16)
 }
 
-class ChunkDrawable(tag: Tag, private var _visibleBlocks: List[Int], level: Level) extends Chunk(tag) {
+class ChunkDrawable(tag: Tag, level: Level) extends Chunk(tag) {
   private var drawable:List[Block] = List()
+  private var structure: List[Block] = List()
+
+  private var interrestingBlocks:Map[Int,List[Block]] = Map()
+
   private val xOffset = xPos*16
   private val zOffset = zPos*16
-  visibleBlocks(_visibleBlocks)
 
-  def visibleBlocks(l: List[Int]) = {
-    _visibleBlocks=l
+  init
 
-    drawable=List()
+  private def init = {
+
+    var coal    : List[Block] = List()//16
+    var iron    : List[Block] = List()//15
+    var gold    : List[Block] = List()//14
+    var diamond : List[Block] = List()//56
+    var lapis   : List[Block] = List()//21
+    var redstone: List[Block] = List()//73
+    var obsidian: List[Block] = List()//49
+    var clay    : List[Block] = List()//82
 
     for(x <- 0 until 16)
       for(z <- 0 until 16)
-	for(y <- 0 until 128)
-	  if(isDrawable(x,y,z))
-	    Block.textures.get(getBlock(x,y,z)) match{
-	      case Some(tex) => drawable = new Block(-(xOffset+x)*Block.SIZE,
-						     (zOffset+z)*Block.SIZE,
-						     -y*Block.SIZE,tex)::drawable
-	      case None => ()
-	    }
+	for(y <- 0 until 128){
+	  var id = getBlock(x,y,z)
+	  Block(-(xOffset+x)*Block.SIZE,
+		(zOffset+z)*Block.SIZE,
+		-y*Block.SIZE,
+		id) match{
+	    case Some(block) =>
+	      if(isDrawable(x,y,z))
+		structure=block::structure
+	      else{}
+		id match{
+		  case 16 => coal    =block::coal
+		  case 15 => iron    =block::iron
+		  case 14 => gold    =block::gold
+		  case 56 => diamond =block::diamond
+		  case 21 => lapis   =block::lapis
+		  case 73 => redstone=block::redstone
+		  case 49 => obsidian=block::obsidian
+		  case 82 => clay    =block::clay
+		  case _ => ()
+		}
+	    case None => ()
+	  }
+	}
 
-
+    drawable=structure
+    interrestingBlocks=Map(16 -> coal,
+			   15 -> iron,
+			   14 -> gold,
+			   56 -> diamond,
+			   21 -> lapis,
+			   73 -> redstone,
+			   49 -> obsidian,
+			   82 -> clay)
   }
+
+  def updateVisibleBlocks(l: List[Int]) = {
+    drawable=structure
+    l foreach(id => drawable=interrestingBlocks(id):::drawable)
+  }
+
 
   private def isDrawable(x: Int, y:Int, z:Int): Boolean = {
     if(getBlock(x,y,z)==0)
       return false
-    if(_visibleBlocks.exists(_==getBlock(x,y,z)))
+
+    if(List(7,8,9,10,11).exists(_==getBlock(x,y,z)))//bedrock lava water visible
       return true
 
     if(y == 0 || y == 127)

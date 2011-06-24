@@ -102,7 +102,7 @@ object Block{
 
   object tool extends PApplet
 
-  val textures = Map(
+  private val textures = Map(
     1  -> tool.loadImage(path+"stone"+".png"),
     2  -> tool.loadImage(path+"grass"+".png"),
     3  -> tool.loadImage(path+"dirt"+".png"),
@@ -162,4 +162,7 @@ object Block{
 
   def isTransparent(id:Int) =
     transparent exists(_==id)
+
+  def apply(x: Int, y: Int, z: Int, id: Int):Option[Block] = 
+    textures.get(id) map(new Block(x, y, z, _))
 }

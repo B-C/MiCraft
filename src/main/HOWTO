@@ -20,7 +20,5 @@ Tool:
 	F4: highlight diamond ore
 	F5: highlight lapis lazuli ore
 	F6: highlight redstone ore
-	F6: highlight pumpkin
-	F7: highlight clay
-	F8: highlight spawner
-	F9: highlight obsidian
+	F7: highlight obsidian
+	F8: highlight clay

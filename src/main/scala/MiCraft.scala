@@ -1,7 +1,7 @@
 import processing.core._
 
 class MiCraft(path:String, cam:Camera) extends AppletWithCamera(cam) {
-  var level = new Level(path, List(7,8,9,10,11))//bedrock lava water visible
+  var level = new Level(path)
 
   override def setup(){
     noCursor
@@ -27,10 +27,8 @@ class MiCraft(path:String, cam:Camera) extends AppletWithCamera(cam) {
     	case KeyEvent.VK_F4  => level.updateVisibleBlocks(56) //diamond
     	case KeyEvent.VK_F5  => level.updateVisibleBlocks(21) //lapis lazuli
     	case KeyEvent.VK_F6  => level.updateVisibleBlocks(73) //redstone
-    	case KeyEvent.VK_F7  => level.updateVisibleBlocks(86) //pumpkin
+    	case KeyEvent.VK_F7  => level.updateVisibleBlocks(49) //obsidian
     	case KeyEvent.VK_F8  => level.updateVisibleBlocks(82) //clay
-    	case KeyEvent.VK_F9  => level.updateVisibleBlocks(52) //spawner
-    	case KeyEvent.VK_F10 => level.updateVisibleBlocks(49) //obsidian
     	case _ => ()
       }
   }
@@ -98,7 +96,7 @@ object MiCraftLoader {
 
     var applet = new MiCraft(path, initCamera(levelPlayer))
 
-    var frame = new javax.swing.JFrame("MiCraft")
+    var frame = new javax.swing.JFrame("MiCraft - "+levelName)
 
     frame.getContentPane().add(applet)
     applet.init
