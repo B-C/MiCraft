@@ -11,19 +11,29 @@ case class Chunk(tag: Tag){
     blockData.value(y + z*128 + x*128*16)
 }
 
-class ChunkDrawable(tag: Tag, var _visibleBlocks: List[Int], level: Level) extends Chunk(tag) {
-  val drawable = Array.ofDim[Boolean](16*128*16)
-  val xOffset = xPos*16
-  val zOffset = zPos*16
+class ChunkDrawable(tag: Tag, private var _visibleBlocks: List[Int], level: Level) extends Chunk(tag) {
+  private var drawable:List[Block] = List()
+  private val xOffset = xPos*16
+  private val zOffset = zPos*16
   visibleBlocks(_visibleBlocks)
 
   def visibleBlocks(l: List[Int]) = {
     _visibleBlocks=l
 
+    drawable=List()
+
     for(x <- 0 until 16)
       for(z <- 0 until 16)
 	for(y <- 0 until 128)
-	  drawable(y + z*128 + x*128 *16)=isDrawable(x,y,z)
+	  if(isDrawable(x,y,z))
+	    Block.textures.get(getBlock(x,y,z)) match{
+	      case Some(tex) => drawable = new Block(-(xOffset+x)*Block.SIZE,
+						     (zOffset+z)*Block.SIZE,
+						     -y*Block.SIZE,tex)::drawable
+	      case None => ()
+	    }
+
+
   }
 
   private def isDrawable(x: Int, y:Int, z:Int): Boolean = {
@@ -60,25 +70,7 @@ class ChunkDrawable(tag: Tag, var _visibleBlocks: List[Int], level: Level) exten
   }
 
   def draw(parent: processing.core.PApplet) = {
-    for(x <- 0 until 16){
-      var offsetX = x*128*16
-      for(z <- 0 until 16){
-	var counter = offsetX + z*128
-	for(y <- 0 until 128){
-	  var id = blockData.value(counter)
-	  if (drawable(counter)){
-	    parent.pushMatrix
-	    parent.translate(-(xOffset+x)*Block.SIZE,
-			     (zOffset+z)*Block.SIZE,
-			     -y*Block.SIZE)
-	    parent.scale(Block.SIZE/2)
-	    Block.draw(id,parent)
-	    parent.popMatrix
-	  }
-	  counter+=1
-	}
-      }
-    }
+    drawable foreach(_.draw(parent))
   }
 
 }

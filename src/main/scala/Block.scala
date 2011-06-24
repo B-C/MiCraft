@@ -40,13 +40,22 @@ object TexturedCube{
   }
 }
 
-object tool extends PApplet
+class Block(x: Int, y: Int, z:Int, tex: PImage){
+
+  def draw(parent: processing.core.PApplet) = {
+    parent.pushMatrix
+    parent.translate(x, y, z)
+    parent.scale(Block.SIZE/2)
+    TexturedCube.draw(tex, parent)
+    parent.popMatrix
+  }
+}
 
 object Block{
   import scala.collection.mutable.HashMap
 
   val SIZE = 16
-  val path = "src/main/resources/"
+  private val path = "src/main/resources/"
 
   private val transparent = List(//XXX water
     0,    //    AIR
@@ -89,9 +98,11 @@ object Block{
     20,   //    GLASS
     8,    //    WATER
     52,   //    SPAWNER
-    83)   //    SUGZRCANE
+    83)   //    SUGARCANE
 
-  private val textures = Map(
+  object tool extends PApplet
+
+  val textures = Map(
     1  -> tool.loadImage(path+"stone"+".png"),
     2  -> tool.loadImage(path+"grass"+".png"),
     3  -> tool.loadImage(path+"dirt"+".png"),
@@ -151,10 +162,4 @@ object Block{
 
   def isTransparent(id:Int) =
     transparent exists(_==id)
-
-  def draw(id:Int, parent: PApplet) =
-    textures.get(id) match{
-      case None => () //println("Texture block "+id+" not found")
-      case Some(tex) => TexturedCube.draw(tex, parent)
-    }
 }
