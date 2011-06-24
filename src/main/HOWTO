@@ -22,3 +22,8 @@ Tool:
 	F6: highlight redstone ore
 	F7: highlight obsidian
 	F8: highlight clay
+
+Other:
+	P: pause/unpause
+	M: more chunks drawn
+	L: less chunks drawn

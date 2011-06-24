@@ -1,7 +1,8 @@
 import processing.core._
 
 class MiCraft(path:String, cam:Camera) extends AppletWithCamera(cam) {
-  var level = new Level(path)
+  private var level = new Level(path)
+  private var pause = false
 
   override def setup(){
     noCursor
@@ -30,6 +31,15 @@ class MiCraft(path:String, cam:Camera) extends AppletWithCamera(cam) {
     	case KeyEvent.VK_F7  => level.updateVisibleBlocks(49) //obsidian
     	case KeyEvent.VK_F8  => level.updateVisibleBlocks(82) //clay
     	case _ => ()
+      }
+    else
+      key.toUpper match{
+	case 'P' =>
+	  if(pause){pause = false; loop; println("Unpaused")}
+	  else{pause = true; noLoop; println("Paused")}
+	case 'M' => level.moreChunks
+	case 'L' => level.lessChunks
+	case _   => ()
       }
   }
 }
