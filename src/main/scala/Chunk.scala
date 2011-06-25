@@ -34,6 +34,7 @@ class ChunkDrawable(tag: Tag, private var visibleBlocks: List[Int], level: Level
     var clay    : List[Block] = List()//82
 
     var structure: List[Block] = List()
+    val isDrawn = Array.ofDim[Boolean](16,16,128)
 
     for(x <- 0 until 16)
       for(z <- 0 until 16)
@@ -44,8 +45,10 @@ class ChunkDrawable(tag: Tag, private var visibleBlocks: List[Int], level: Level
 		-y*Block.SIZE,
 		id) match{
 	    case Some(block) =>
-	      if(isDrawable(x,y,z))
+	      if(isDrawable(x,y,z)){
 		structure=block::structure
+		isDrawn(x)(z)(y)==true
+	      }
 	      else{}
 		id match{
 		  case 16 => coal    =block::coal
@@ -61,6 +64,13 @@ class ChunkDrawable(tag: Tag, private var visibleBlocks: List[Int], level: Level
 	    case None => ()
 	  }
 	}
+
+    structure foreach(b =>{
+      var faces = Array.ofDim[Boolean](6)
+      if(isDrawn(b.x)(b.z)(b.))
+
+    })
+
 
     this.structure=structure
     interrestingBlocks=Map(16 -> coal,

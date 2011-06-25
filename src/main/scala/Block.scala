@@ -41,6 +41,8 @@ object TexturedCube{
 }
 
 class Block(x: Int, y: Int, z:Int, tex: PImage){
+  var faces = Array.ofDim[Boolean](6)
+
 
   def draw(parent: processing.core.PApplet) = {
     parent.pushMatrix
@@ -57,7 +59,7 @@ object Block{
   val SIZE = 16
   private val path = "src/main/resources/"
 
-  private val transparent = List(//XXX water
+  private val transparent = List(
     0,    //    AIR
     6,    //    SAPLING
     26,   //    BED
