@@ -1,10 +1,3 @@
-class LevelActor(l: Level, i: Int, j: Int) extends scala.actors.Actor{
-  def act = {
-    l.loadChunk(i,j)
-    println("Chunk "+i+", "+j+" Loaded")
-  }
-}
-
 class Level(path: String){
   val LEVEL_SIZE = 128
   private var nbChunksDraw = 1
@@ -56,6 +49,8 @@ class Level(path: String){
   }
 
   def draw(camX: Int, camZ: Int, parent: processing.core.PApplet) ={
+    import scala.actors.Actor._
+
     val chunkX = -camX/Block.SIZE/16
     val chunkZ = camZ/Block.SIZE/16-1
 
@@ -64,7 +59,15 @@ class Level(path: String){
 	if(isInLevel(i,j)) {
 	  if(!isLoaded(i,j)){
 	    println("Request Chunk "+i+", "+j)
-	    (new LevelActor(this, i, j).start) ! ()
+	    var a = actor {
+	      react {
+		case Tuple3(l: Level, i: Int, j: Int) => {
+		  l.loadChunk(i,j)
+		  println("Chunk "+i+", "+j+" Loaded")
+		}
+	      }
+	    }
+	    a.start ! Tuple3(this, i, j)
 	    chunksLoaded(i+LEVEL_SIZE/2)(j+LEVEL_SIZE/2)=true
 	  }
 	  getChunk(i,j) map (_.draw(parent))
