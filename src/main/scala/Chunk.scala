@@ -22,8 +22,8 @@ class ChunkDrawable(tag: Tag, private var visibleBlocks: List[Int], level: Level
 
   init
 
-  def init = {
 
+  def init = {
     var coal    : List[Block] = List()//16
     var iron    : List[Block] = List()//15
     var gold    : List[Block] = List()//14
@@ -46,7 +46,7 @@ class ChunkDrawable(tag: Tag, private var visibleBlocks: List[Int], level: Level
 	    case Some(block) =>
 	      if(isDrawable(x,y,z))
 		structure=block::structure
-	      else{}
+	      else
 		id match{
 		  case 16 => coal    =block::coal
 		  case 15 => iron    =block::iron
