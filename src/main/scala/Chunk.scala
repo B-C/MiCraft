@@ -11,7 +11,7 @@ case class Chunk(tag: Tag){
     blockData.value(y + z*128 + x*128*16)
 }
 
-class ChunkDrawable(tag: Tag, level: Level) extends Chunk(tag) {
+class ChunkDrawable(tag: Tag, private var visibleBlocks: List[Int], level: Level) extends Chunk(tag) {
   private var drawable:List[Block] = List()
   private var structure: List[Block] = List()
 
@@ -22,7 +22,7 @@ class ChunkDrawable(tag: Tag, level: Level) extends Chunk(tag) {
 
   init
 
-  private def init = {
+  def init = {
 
     var coal    : List[Block] = List()//16
     var iron    : List[Block] = List()//15
@@ -32,6 +32,8 @@ class ChunkDrawable(tag: Tag, level: Level) extends Chunk(tag) {
     var redstone: List[Block] = List()//73
     var obsidian: List[Block] = List()//49
     var clay    : List[Block] = List()//82
+
+    var structure: List[Block] = List()
 
     for(x <- 0 until 16)
       for(z <- 0 until 16)
@@ -60,7 +62,7 @@ class ChunkDrawable(tag: Tag, level: Level) extends Chunk(tag) {
 	  }
 	}
 
-    drawable=structure
+    this.structure=structure
     interrestingBlocks=Map(16 -> coal,
 			   15 -> iron,
 			   14 -> gold,
@@ -69,13 +71,20 @@ class ChunkDrawable(tag: Tag, level: Level) extends Chunk(tag) {
 			   73 -> redstone,
 			   49 -> obsidian,
 			   82 -> clay)
+
+    updateVisibleBlocks
+    println("Chunk " + xPos +", " + zPos + " initialized")
   }
 
-  def updateVisibleBlocks(l: List[Int]) = {
+  private def updateVisibleBlocks():Unit = {
     drawable=structure
-    l foreach(id => drawable=interrestingBlocks(id):::drawable)
+    visibleBlocks foreach(id => drawable=interrestingBlocks(id):::drawable)
   }
 
+  def updateVisibleBlocks(l: List[Int]): Unit = {
+    visibleBlocks = l
+    updateVisibleBlocks
+  }
 
   private def isDrawable(x: Int, y:Int, z:Int): Boolean = {
     if(getBlock(x,y,z)==0)

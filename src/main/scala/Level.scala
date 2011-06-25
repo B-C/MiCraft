@@ -40,12 +40,22 @@ class Level(path: String){
   def isLoaded(i: Int, j: Int) = chunksLoaded(i+LEVEL_SIZE/2)(j+LEVEL_SIZE/2)
 
   def loadChunk(i: Int, j:Int): Unit = {
-    val chunk = RegionFile(path,i,j) map ( is => new ChunkDrawable(Tag(is), this))
-
-    if(!visibleBlocks.isEmpty)
-      chunk foreach(_.updateVisibleBlocks(visibleBlocks))
-
+    val chunk = RegionFile(path,i,j) map ( is => new ChunkDrawable(Tag(is), visibleBlocks, this))
     chunks(i+LEVEL_SIZE/2)(j+LEVEL_SIZE/2) = chunk
+
+    chunk match{
+      case Some(c) => {
+	val update = (i: Int, j: Int) =>
+	  if(isInLevel(i,j) && isLoaded(i,j))
+	     getChunk(i,j) foreach(_.init)
+
+	update(i-1,j)
+	update(i+1,j)
+	update(i,j-1)
+	update(i,j+1)
+      }
+      case None => ()
+    }
   }
 
   def draw(camX: Int, camZ: Int, parent: processing.core.PApplet) ={
@@ -61,10 +71,7 @@ class Level(path: String){
 	    println("Request Chunk "+i+", "+j)
 	    var a = actor {
 	      react {
-		case Tuple3(l: Level, i: Int, j: Int) => {
-		  l.loadChunk(i,j)
-		  println("Chunk "+i+", "+j+" Loaded")
-		}
+		case Tuple3(l: Level, i: Int, j: Int) => l.loadChunk(i,j)
 	      }
 	    }
 	    a.start ! Tuple3(this, i, j)
