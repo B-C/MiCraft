@@ -70,17 +70,14 @@ object Block{
     38,   //    RED_ROS
     39,   //    BROWN_MUSHROOM
     40,   //    RED_MUSHROOM
-    44,   //    SLAB
     50,   //    TORCH
     51,   //    FIRE
-    53,   //    WOODEN_STAIRS
     55,   //    REDSTONE_WIRE
     59,   //    CROPS
     63,   //    SIGNPOST
     64,   //    WOODEN_DOOR
     65,   //    LADDER
     66,   //    MINECART_TRACKS
-    67,   //    COBBLESTONE_STAIRS
     68,   //    WALL_SIGN
     69,   //    LEVER
     70,   //    STONE_PRESSURE_PLATE
@@ -131,12 +128,14 @@ object Block{
     41 -> tool.loadImage(path+"gold_block"+".png"),
     42 -> tool.loadImage(path+"iron_block"+".png"),
     43 -> tool.loadImage(path+"double_slab"+".png"),
+    44 -> tool.loadImage(path+"double_slab"+".png"),//Slab
     45 -> tool.loadImage(path+"brick"+".png"),
     46 -> tool.loadImage(path+"tnt"+".png"),
     47 -> tool.loadImage(path+"bookshelf"+".png"),
     48 -> tool.loadImage(path+"mossy_cobblestone"+".png"),
     49 -> tool.loadImage(path+"obsidian"+".png"),
     52 -> tool.loadImage(path+"spawner"+".png"),
+    53 -> tool.loadImage(path+"plank"+".png"),//Wooden Stairs
     54 -> tool.loadImage(path+"chest"+".png"),
     56 -> tool.loadImage(path+"diamond_ore"+".png"),
     57 -> tool.loadImage(path+"diamond_block"+".png"),
@@ -144,6 +143,7 @@ object Block{
     60 -> tool.loadImage(path+"farmland"+".png"),
     61 -> tool.loadImage(path+"furnace"+".png"),
     62 -> tool.loadImage(path+"burning_furnace"+".png"),
+    67 -> tool.loadImage(path+"cobblestone"+".png"),//Cobblestone Stairs
     73 -> tool.loadImage(path+"redstone_ore"+".png"),
     74 -> tool.loadImage(path+"redstone_ore"+".png"),
     78 -> tool.loadImage(path+"snow"+".png"),
@@ -163,6 +163,6 @@ object Block{
   def isTransparent(id:Int) =
     transparent exists(_==id)
 
-  def apply(x: Int, y: Int, z: Int, id: Int):Option[Block] = 
+  def apply(x: Int, y: Int, z: Int, id: Int):Option[Block] =
     textures.get(id) map(new Block(x, y, z, _))
 }
