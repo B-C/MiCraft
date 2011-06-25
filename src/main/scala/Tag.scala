@@ -1,6 +1,12 @@
-/*
- * XXX to be cleaned
- */
+/* ****************************************************************************
+ * Class Tag:
+ *  Each Tag class store a value of a certain type and, if necessary, the name
+ *  of the tag.
+ *
+ * Object Tag:
+ *  Parses a DataInputStream and return the Tag it contains
+ *
+ *************************************************************************** */
 
 sealed abstract class Tag(name: String, value: Any)
 

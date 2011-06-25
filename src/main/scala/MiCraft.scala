@@ -1,3 +1,17 @@
+/* ****************************************************************************
+ * Class MiCraft:
+ *  Extends AppletWithCamera
+ *  Draws the map
+ *  Updates visible blocks thanks to keyPressed, number of chunks drawn
+ *  and pause.
+ *
+ * Object MiCraftLoader:
+ *  Allows the user to choose which map to load
+ *  Extracts its infos (name, camera position), stored in level.dat
+ *  Creates a JFrame and init the class MiCraft
+ *
+ *************************************************************************** */
+
 import processing.core._
 
 class MiCraft(path:String, cam:Camera) extends AppletWithCamera(cam) {
@@ -6,7 +20,7 @@ class MiCraft(path:String, cam:Camera) extends AppletWithCamera(cam) {
 
   override def setup(){
     noCursor
-    size(640, 360, PConstants.P3D)
+    size(1024, 768, PConstants.P3D)
     textureMode(PConstants.NORMAL)
     noStroke
   }

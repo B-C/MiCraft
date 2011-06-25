@@ -5,7 +5,7 @@ Minecraft map viewer by Bertrand Chazot
 PLNC 2011
 Télécom ParisTech
 
-(tested with Scala 2.9, Processing 1.5.1)
+(tested with Scala 2.9, Processing 1.5.1, on Linux)
 ______________________________________________________
 
 In order to compile:

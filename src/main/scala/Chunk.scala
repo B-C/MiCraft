@@ -1,3 +1,19 @@
+/* ****************************************************************************
+ * Class Chunk:
+ *  In Minecraft a chunk is a 16*16*128 blocks Unit.
+ *  Chunks are stored in tags.
+ *  The class extracts the blocks from the tags and its position.
+ *
+ * Class ChunkDrawable:
+ *  Extends Chunk.
+ *  Analyzes the blocks and find those worthy of being displayed. That is to
+ *  say ores and block in contact with air.
+ *  Ore block might be displayed or not, depending on the value of
+ *  visibleBlocks.
+ *  Has a draw method.
+ *
+ *************************************************************************** */
+
 case class Chunk(tag: Tag){
   val data = tag.asInstanceOf[CompoundTag]
   val levelTag = data.value.head.asInstanceOf[CompoundTag]
@@ -22,7 +38,7 @@ class ChunkDrawable(tag: Tag, private var visibleBlocks: List[Int], level: Level
 
   init
 
-
+  //Extracts blocks that have to be displayed
   def init = {
     var coal    : List[Block] = List()//16
     var iron    : List[Block] = List()//15
@@ -44,10 +60,10 @@ class ChunkDrawable(tag: Tag, private var visibleBlocks: List[Int], level: Level
 		-y*Block.SIZE,
 		id) match{
 	    case Some(block) =>
-	      if(isDrawable(x,y,z))
+	      if(isDrawable(x,y,z))//Block in contact with air
 		structure=block::structure
 	      else
-		id match{
+		id match{//check whether it is an interresting block
 		  case 16 => coal    =block::coal
 		  case 15 => iron    =block::iron
 		  case 14 => gold    =block::gold
@@ -76,6 +92,7 @@ class ChunkDrawable(tag: Tag, private var visibleBlocks: List[Int], level: Level
     println("Chunk " + xPos +", " + zPos + " initialized")
   }
 
+  //Set blocks to be drawn
   private def updateVisibleBlocks():Unit = {
     drawable=structure
     visibleBlocks foreach(id => drawable=interrestingBlocks(id):::drawable)

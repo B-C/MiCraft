@@ -1,3 +1,13 @@
+/* ****************************************************************************
+ * Class AppletWithCamera:
+ *  Inherits from processing.core.PApplet
+ *  Adds freefly Camera handling
+ *
+ * Class Camera:
+ *  Camera freefly
+ *
+ *************************************************************************** */
+
 import processing.core._
 
 abstract class AppletWithCamera(cam:Camera) extends PApplet{
@@ -38,6 +48,7 @@ abstract class AppletWithCamera(cam:Camera) extends PApplet{
 
   override def camera = cam(this)
 }
+
 
 class Camera(var position: PVector,
 	     private var phi:Float, private var theta:Float,

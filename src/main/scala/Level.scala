@@ -1,3 +1,13 @@
+/* ****************************************************************************
+ * Class Level:
+ *  A minecraft level
+ *  Load chunks (with RegionFile) thanks to actors
+ *  Set the number of chunks drawn
+ *  Update the visible blocks of chunks
+ *  Has a draw method
+ *
+ *************************************************************************** */
+
 class Level(path: String){
   val LEVEL_SIZE = 128
   private var nbChunksDraw = 1
@@ -29,7 +39,8 @@ class Level(path: String){
   }
 
   def isInLevel(x: Int,z: Int): Boolean =
-    !(x < -LEVEL_SIZE/2 || x >= LEVEL_SIZE/2 || z < -LEVEL_SIZE/2 || z >= LEVEL_SIZE/2)
+    !(x < -LEVEL_SIZE/2 || x >= LEVEL_SIZE/2 ||
+      z < -LEVEL_SIZE/2 || z >= LEVEL_SIZE/2)
 
   def getChunk(x: Int,z: Int): Option[ChunkDrawable] =
     if(isInLevel(x, z))
@@ -40,9 +51,12 @@ class Level(path: String){
   def isLoaded(i: Int, j: Int) = chunksLoaded(i+LEVEL_SIZE/2)(j+LEVEL_SIZE/2)
 
   def loadChunk(i: Int, j:Int): Unit = {
-    val chunk = RegionFile(path,i,j) map ( is => new ChunkDrawable(Tag(is), visibleBlocks, this))
+    val chunk = RegionFile(path,i,j) map (is =>
+      new ChunkDrawable(Tag(is), visibleBlocks, this))
     chunks(i+LEVEL_SIZE/2)(j+LEVEL_SIZE/2) = chunk
 
+    //re-inits chunks which have a new neighborg, to update visible blocks
+    //at the border(overkill)
     chunk match{
       case Some(c) => {
 	val update = (i: Int, j: Int) =>

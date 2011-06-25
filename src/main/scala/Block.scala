@@ -1,3 +1,18 @@
+/* ****************************************************************************
+ * Object TexturedCube:
+ *  Used to draw a 1*1*1 cube with the texture provided
+ *
+ * Class Block:
+ *  A minecraft block that know its position and its texture
+ *  Has a draw method
+ *
+ * Object Block:
+ *  Loads all textures in an hashmap (blockID -> texture)
+ *  Has a method to test whether a block is transparent or not
+ *  Is also a block factory through apply
+ *
+ *************************************************************************** */
+
 import processing.core._
 
 object TexturedCube{
@@ -57,7 +72,7 @@ object Block{
   val SIZE = 16
   private val path = "src/main/resources/"
 
-  private val transparent = List(//XXX water
+  private val transparent = List(
     0,    //    AIR
     6,    //    SAPLING
     26,   //    BED
