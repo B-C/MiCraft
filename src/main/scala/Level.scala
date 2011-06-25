@@ -1,7 +1,15 @@
+class LevelActor(l: Level, i: Int, j: Int) extends scala.actors.Actor{
+  def act = {
+    l.loadChunk(i,j)
+    println("Chunk "+i+", "+j+" Loaded")
+  }
+}
+
 class Level(path: String){
   val LEVEL_SIZE = 128
   private var nbChunksDraw = 1
   private var chunks:Array[Array[Option[ChunkDrawable]]] = Array.ofDim(LEVEL_SIZE,LEVEL_SIZE)
+  private var chunksLoaded:Array[Array[Boolean]] = Array.ofDim(LEVEL_SIZE,LEVEL_SIZE)
   private var visibleBlocks: List[Int] = List()
 
   for(i <- 0 until LEVEL_SIZE)
@@ -36,6 +44,8 @@ class Level(path: String){
     else
       None
 
+  def isLoaded(i: Int, j: Int) = chunksLoaded(i+LEVEL_SIZE/2)(j+LEVEL_SIZE/2)
+
   def loadChunk(i: Int, j:Int): Unit = {
     val chunk = RegionFile(path,i,j) map ( is => new ChunkDrawable(Tag(is), this))
 
@@ -52,12 +62,11 @@ class Level(path: String){
     for(i <- chunkX-nbChunksDraw/2 until chunkX+(nbChunksDraw+1)/2)
       for(j <- chunkZ-nbChunksDraw/2 until chunkZ+(nbChunksDraw+1)/2)
 	if(isInLevel(i,j)) {
-	  if(getChunk(i,j)==None){// XXX try to load many time chunks that don't exist
-	    println("Loading Chunk "+i+", "+j)
-	    loadChunk(i,j)
-	    println("Chunk "+i+", "+j+" Loaded")
+	  if(!isLoaded(i,j)){
+	    println("Request Chunk "+i+", "+j)
+	    (new LevelActor(this, i, j).start) ! ()
+	    chunksLoaded(i+LEVEL_SIZE/2)(j+LEVEL_SIZE/2)=true
 	  }
-
 	  getChunk(i,j) map (_.draw(parent))
 	}
   }
