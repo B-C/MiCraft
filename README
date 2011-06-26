@@ -14,4 +14,4 @@ In order to compile:
 - copy <processing>/lib/core.jar in <project>/lib
 ______________________________________________________
 
-See HOWTO (src/main) for commands
+See HOWTO for commands
