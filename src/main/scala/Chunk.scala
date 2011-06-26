@@ -14,7 +14,7 @@
  *
  *************************************************************************** */
 
-case class Chunk(tag: Tag){
+class Chunk(tag: Tag){
   val data = tag.asInstanceOf[CompoundTag]
   val levelTag = data.value.head.asInstanceOf[CompoundTag]
   val xPos = levelTag.get("xPos").get.asInstanceOf[IntTag].value
@@ -55,27 +55,21 @@ class ChunkDrawable(tag: Tag, private var visibleBlocks: List[Int], level: Level
       for(z <- 0 until 16)
 	for(y <- 0 until 128){
 	  var id = getBlock(x,y,z)
-	  Block(-(xOffset+x)*Block.SIZE,
-		(zOffset+z)*Block.SIZE,
-		-y*Block.SIZE,
-		id) match{
-	    case Some(block) =>
-	      if(isDrawable(x,y,z))//Block in contact with air
-		structure=block::structure
-	      else
-		id match{//check whether it is an interresting block
-		  case 16 => coal    =block::coal
-		  case 15 => iron    =block::iron
-		  case 14 => gold    =block::gold
-		  case 56 => diamond =block::diamond
-		  case 21 => lapis   =block::lapis
-		  case 73 => redstone=block::redstone
-		  case 49 => obsidian=block::obsidian
-		  case 82 => clay    =block::clay
-		  case _ => ()
-		}
-	    case None => ()
-	  }
+	  Block(-(xOffset+x)*Block.SIZE, (zOffset+z)*Block.SIZE, -y*Block.SIZE, id) foreach (block =>
+	    if(isDrawable(x,y,z))//Block in contact with air
+	      structure=block::structure
+	    else
+	      id match{//check whether it is an interresting block
+		case 16 => coal    =block::coal
+		case 15 => iron    =block::iron
+		case 14 => gold    =block::gold
+		case 56 => diamond =block::diamond
+		case 21 => lapis   =block::lapis
+		case 73 => redstone=block::redstone
+		case 49 => obsidian=block::obsidian
+		case 82 => clay    =block::clay
+		case _ => ()
+	      })
 	}
 
     this.structure=structure
